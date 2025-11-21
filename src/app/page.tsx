@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { services } from '@/data/services';
 
 /**
@@ -138,8 +139,8 @@ export default function Home() {
               your educational goals with confidence.
             </p>
             <div className="flex flex-col gap-4 sm:flex-row">
-              <button className="rounded-2xl bg-blue-600 px-10 py-3 text-base font-semibold text-white shadow-xl shadow-blue-500/30 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-blue-700">
-                Get Started
+              <button className="rounded-lg bg-blue-600 px-10 py-3 text-base font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-700">
+                GET STARTED
               </button>
               <button className="rounded-2xl border-2 border-blue-600 bg-white/80 px-10 py-3 text-base font-semibold text-blue-600 backdrop-blur transition-colors duration-200 hover:bg-blue-50">
                 Learn More
@@ -159,10 +160,10 @@ export default function Home() {
                 <button
                   key={service.id}
                   onClick={() => handleServiceChange(service.id)}
-                  className={`rounded-full px-6 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                  className={`rounded-full px-6 py-2.5 text-sm font-semibold uppercase transition-all duration-200 ${
                     activeService === service.id
                       ? 'bg-blue-600 text-white shadow-md shadow-blue-500/30'
-                      : 'bg-blue-50 text-blue-700 hover:bg-blue-100'
+                      : 'bg-blue-50 text-blue-600 hover:bg-blue-100'
                   }`}
                 >
                   {service.title}
@@ -282,6 +283,193 @@ export default function Home() {
                   </div>
                 );
               })}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Features Carousel Section */}
+      <section className="bg-slate-50 py-16">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl mb-4">
+              Platform Features
+            </h2>
+            <p className="text-lg text-slate-600">
+              Discover the powerful tools that help you succeed
+            </p>
+          </div>
+
+          {/* Auto-scrolling Carousel with Hover Pause */}
+          <div className="relative overflow-hidden">
+            <div
+              className="flex gap-6"
+              style={{
+                animation: 'scroll 30s linear infinite',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.animationPlayState = 'paused';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.animationPlayState = 'running';
+              }}
+            >
+              {/* First set of features */}
+              {[
+                { id: 1, title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic history and career goals.', icon: '🤖' },
+                { id: 2, title: 'Semester Planning', description: 'Plan your entire semester with ease and optimize your course schedule.', icon: '📅' },
+                { id: 3, title: 'Progress Tracking', description: 'Monitor your academic progress with real-time dashboards and analytics.', icon: '📊' },
+                { id: 4, title: 'Advisor Connection', description: 'Connect seamlessly with academic advisors for expert guidance.', icon: '👥' },
+                { id: 5, title: 'Course Analytics', description: 'Analyze course difficulty and success rates to make informed decisions.', icon: '📈' },
+                { id: 6, title: 'Degree Planning', description: 'Track your degree requirements and plan your path to graduation.', icon: '🎓' },
+                { id: 7, title: 'Smart Scheduling', description: 'Automatically generate optimal class schedules based on your preferences.', icon: '⏰' },
+                { id: 8, title: 'Academic Insights', description: 'Get detailed insights into your academic performance and areas for improvement.', icon: '💡' },
+              ].map((feature) => (
+                <div
+                  key={feature.id}
+                  className="flex-shrink-0 w-[320px] rounded-2xl border border-slate-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                >
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 text-4xl">
+                    {feature.icon}
+                  </div>
+                  <h3 className="mb-2 text-xl font-bold text-slate-900">
+                    {feature.title}
+                  </h3>
+                  <p className="text-base leading-relaxed text-slate-600">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+              {/* Duplicate set for seamless loop */}
+              {[
+                { id: 1, title: 'AI-Powered Recommendations', description: 'Get personalized course suggestions based on your academic history and career goals.', icon: '🤖' },
+                { id: 2, title: 'Semester Planning', description: 'Plan your entire semester with ease and optimize your course schedule.', icon: '📅' },
+                { id: 3, title: 'Progress Tracking', description: 'Monitor your academic progress with real-time dashboards and analytics.', icon: '📊' },
+                { id: 4, title: 'Advisor Connection', description: 'Connect seamlessly with academic advisors for expert guidance.', icon: '👥' },
+                { id: 5, title: 'Course Analytics', description: 'Analyze course difficulty and success rates to make informed decisions.', icon: '📈' },
+                { id: 6, title: 'Degree Planning', description: 'Track your degree requirements and plan your path to graduation.', icon: '🎓' },
+                { id: 7, title: 'Smart Scheduling', description: 'Automatically generate optimal class schedules based on your preferences.', icon: '⏰' },
+                { id: 8, title: 'Academic Insights', description: 'Get detailed insights into your academic performance and areas for improvement.', icon: '💡' },
+              ].map((feature) => (
+                <div
+                  key={`duplicate-${feature.id}`}
+                  className="flex-shrink-0 w-[320px] rounded-2xl border border-slate-200 bg-white p-6 shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+                >
+                  <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-xl bg-blue-100 text-4xl">
+                    {feature.icon}
+                  </div>
+                  <h3 className="mb-2 text-xl font-bold text-slate-900">
+                    {feature.title}
+                  </h3>
+                  <p className="text-base leading-relaxed text-slate-600">
+                    {feature.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="relative bg-white py-24 overflow-hidden">
+        {/* Subtle background pattern */}
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-0 left-0 w-full h-full" style={{
+            backgroundImage: 'radial-gradient(circle at 2px 2px, #3b82f6 1px, transparent 0)',
+            backgroundSize: '40px 40px'
+          }} />
+        </div>
+        
+        <div className="mx-auto max-w-7xl px-6 relative z-10">
+          {/* Header */}
+          <div className="mb-20">
+            <div className="inline-block mb-6">
+              <span className="text-sm font-semibold uppercase tracking-wider text-blue-600">
+                About Us
+              </span>
+              <div className="mt-2 h-1 w-16 bg-gradient-to-r from-blue-600 to-indigo-600" />
+            </div>
+            <h2 className="text-3xl font-bold text-slate-900 sm:text-4xl lg:text-5xl max-w-3xl leading-tight">
+              NU PAL empowers everyone to build their academic success
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 gap-16 lg:grid-cols-2 lg:items-center">
+            {/* Left Panel - University Image */}
+            <div className="relative">
+              <div className="relative overflow-hidden">
+                {/* Gradient accent line */}
+                <div className="absolute -left-4 top-0 bottom-0 w-1 bg-gradient-to-b from-blue-600 via-indigo-600 to-purple-600 rounded-full" />
+                
+                <div className="relative ml-8">
+                  <div className="relative overflow-hidden rounded-3xl">
+                    <img
+                      src="/nile4.jpg"
+                      alt="Nile University Campus"
+                      className="w-full h-auto object-cover rounded-3xl"
+                      style={{ maxHeight: '600px' }}
+                    />
+                    {/* Overlay gradient */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 via-transparent to-transparent pointer-events-none rounded-3xl" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Panel - Text Content */}
+            <div className="space-y-8">
+              {/* First Paragraph */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="mt-2 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-600" />
+                  <p className="text-lg leading-relaxed text-slate-700">
+                    NU PAL is a cutting-edge academic advising platform that leverages artificial intelligence to transform how students navigate their educational journey. Our platform combines advanced machine learning algorithms with proven academic advising principles to deliver personalized, data-driven guidance that adapts to each student's unique goals and circumstances.
+                  </p>
+                </div>
+              </div>
+
+              {/* Second Paragraph */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-4">
+                  <div className="mt-2 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-indigo-600" />
+                  <p className="text-lg leading-relaxed text-slate-600">
+                    We empower students to make confident, informed decisions about their academic path. Through intelligent course recommendations, comprehensive progress tracking, and intuitive semester planning tools, NU PAL eliminates the complexity and uncertainty from academic planning.
+                  </p>
+                </div>
+              </div>
+
+              {/* Feature highlights - Minimal style */}
+              <div className="pt-8 border-t-2 border-slate-100">
+                <div className="flex flex-wrap gap-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 text-sm font-bold">AI</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">AI-Powered</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center">
+                      <span className="text-indigo-600 text-sm font-bold">P</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">Personalized</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center">
+                      <span className="text-purple-600 text-sm font-bold">C</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">Comprehensive</span>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                      <span className="text-blue-600 text-sm font-bold">I</span>
+                    </div>
+                    <span className="text-sm font-semibold text-slate-700">Intuitive</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -428,9 +616,9 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="rounded-lg bg-blue-600 px-8 py-3 text-base font-semibold uppercase tracking-wide text-white shadow-lg shadow-blue-500/30 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-xl hover:shadow-blue-500/40 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="rounded-lg bg-blue-600 px-8 py-3 text-base font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-700 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {isSubmitting ? 'Submitting...' : 'Send Message'}
+                  {isSubmitting ? 'SUBMITTING...' : 'SEND MESSAGE'}
                 </button>
               </div>
             </form>

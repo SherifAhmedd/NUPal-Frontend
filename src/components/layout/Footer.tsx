@@ -6,10 +6,7 @@ export function Footer() {
           {/* Brand Column */}
           <div className="md:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-blue-600 text-white shadow-lg shadow-blue-500/30">
-                <span className="text-xl">📘</span>
-              </div>
-              <span className="text-xl font-semibold text-slate-900">NU PAL</span>
+              <span className="text-xl font-bold text-slate-900">NU PAL</span>
             </div>
             <p className="text-sm leading-relaxed text-slate-600">
               Empowering students to make informed academic decisions and achieve their educational goals.
@@ -109,7 +106,7 @@ export function Footer() {
 
         {/* Copyright */}
         <div className="text-center">
-          <p className="text-sm text-slate-600">© 2024 NU PAL. All rights reserved.</p>
+          <p className="text-sm text-slate-600">© 2025 NU PAL. All rights reserved.</p>
         </div>
       </div>
     </footer>

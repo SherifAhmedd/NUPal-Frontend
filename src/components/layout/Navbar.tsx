@@ -43,10 +43,7 @@ export function Navbar() {
     >
       <div className="relative flex w-full items-center justify-between px-20 py-3">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-lg shadow-blue-500/30">
-            <span className="text-lg">📘</span>
-          </div>
-          <span className="text-lg font-semibold text-slate-900">NU PAL</span>
+          <span className="text-xl font-bold text-slate-900">NU PAL</span>
         </div>
 
         <nav
@@ -122,8 +119,8 @@ export function Navbar() {
           })}
         </nav>
 
-        <button className="rounded-full bg-blue-600 px-6 py-1.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/30 transition-transform duration-200 hover:-translate-y-0.5 hover:bg-blue-700">
-          Login
+        <button className="rounded-lg bg-blue-600 px-6 py-2 text-sm font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-700">
+          LOGIN
         </button>
       </div>
     </header>
