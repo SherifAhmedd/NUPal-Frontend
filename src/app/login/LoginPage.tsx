@@ -8,6 +8,8 @@ export function LoginPageContent() {
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [out, setOut] = useState('');
+  const [err, setErr] = useState('');
 
   useEffect(() => {
     const prev = document.body.style.overflow;
@@ -20,9 +22,25 @@ export function LoginPageContent() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setTimeout(() => {
+    setErr('');
+    setOut('');
+    try {
+      const res = await fetch('http://localhost:5009/api/students/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setErr(data.error || 'Login failed');
+      } else {
+        setOut(JSON.stringify(data.student, null, 2));
+      }
+    } catch (e: any) {
+      setErr(e?.message || 'Network error');
+    } finally {
       setIsSubmitting(false);
-    }, 800);
+    }
   };
 
   return (
@@ -137,6 +155,12 @@ export function LoginPageContent() {
             {isSubmitting ? 'LOGGING IN...' : 'LOGIN'}
           </button>
         </form>
+        <div className="mt-4">
+          {err && <div className="text-red-600 text-sm mb-2">{err}</div>}
+          {out && (
+            <pre className="text-xs bg-slate-50 border border-slate-200 rounded p-3 overflow-auto max-h-64">{out}</pre>
+          )}
+        </div>
       </div>
     </div>
   );

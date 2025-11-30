@@ -26,6 +26,15 @@ export default {
         md: "0.375rem",
         sm: "0.25rem"
       },
+      keyframes: {
+        waveFloat: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+      },
+      animation: {
+        waveFloat: 'waveFloat 6s ease-in-out infinite',
+      },
     }
   }
 } satisfies Config;

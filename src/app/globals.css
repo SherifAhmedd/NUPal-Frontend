@@ -37,3 +37,13 @@
     transform: translateX(-50%);
   }
 }
+
+/* Wave float animation for wave SVG elements */
+@keyframes waveFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
