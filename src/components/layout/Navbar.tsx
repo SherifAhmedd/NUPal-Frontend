@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -25,6 +25,7 @@ export function Navbar() {
   const [activeHash, setActiveHash] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname() || '';
 
   useEffect(() => {
@@ -57,6 +58,23 @@ export function Navbar() {
       }
     }
   }, [pathname, activeHash]);
+
+  // Click outside listener for profile menu
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
 
   useEffect(() => {
     try {
@@ -170,7 +188,7 @@ export function Navbar() {
         </nav>
 
         {(pathname.startsWith('/dashboard') || pathname === '/chat' || pathname === '/career-hub') ? (
-          <div className="relative">
+          <div className="relative" ref={menuRef}>
             <button
               onClick={() => setMenuOpen((v) => !v)}
               aria-label="Open profile menu"
