@@ -53,19 +53,19 @@ export function Footer() {
             <h3 className="mb-4 text-sm font-semibold text-slate-900">Company</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
+                <Link href="/#about" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
                   About
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
+                <Link href="/#contact" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
                   Contact
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
+                <Link href="#" className="text-sm text-slate-600 transition-colors hover:text-blue-400">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
