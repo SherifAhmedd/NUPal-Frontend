@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 import { getToken, parseJwt, removeToken } from "@/lib/auth";
 import { User, Settings, LogOut } from "lucide-react";
+import Button from "@/components/ui/Button";
 
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
 
@@ -218,12 +219,13 @@ export function Navbar() {
             )}
           </div>
         ) : (
-          <Link
+          <Button
             href="/login"
-            className="rounded-lg bg-blue-400 px-6 py-2 text-sm font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-500"
+            size="md"
+            className="px-6"
           >
             LOGIN
-          </Link>
+          </Button>
         )}
       </div>
     </header>

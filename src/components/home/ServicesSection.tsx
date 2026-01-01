@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { services } from '@/data/services';
 
 export default function ServicesSection() {
@@ -61,7 +62,7 @@ export default function ServicesSection() {
                   <div className={`overflow-hidden transition-all duration-500 ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="pb-6 pl-5">
                       <p className="mb-4 text-base leading-relaxed text-slate-600">{service.description}</p>
-                      <a href="#" className="text-sm font-semibold text-indigo-600 underline hover:text-blue-500">Take a guided tour</a>
+                      <Link href="/login" className="text-sm font-semibold text-indigo-600 underline hover:text-blue-500">Take a guided tour</Link>
                     </div>
                   </div>
                 </div>

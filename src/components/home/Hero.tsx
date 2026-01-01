@@ -1,5 +1,7 @@
 'use client';
 
+import Button from '@/components/ui/Button';
+
 export default function Hero() {
   return (
     <section id="home" className="relative isolate w-full overflow-hidden py-20">
@@ -19,12 +21,12 @@ export default function Hero() {
             your educational goals with confidence.
           </p>
           <div className="flex flex-col gap-4 sm:flex-row">
-            <button className="rounded-lg bg-blue-400 px-10 py-3 text-base font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-500">
+            <Button href="/login" size="lg">
               GET STARTED
-            </button>
-            <button className="rounded-2xl border-2 border-blue-400 bg-white/80 px-10 py-3 text-base font-semibold text-blue-400 backdrop-blur transition-colors duration-200 hover:bg-blue-50">
+            </Button>
+            <Button href="#about" variant="outline" size="lg">
               Learn More
-            </button>
+            </Button>
           </div>
         </div>
       </div>
