@@ -124,7 +124,7 @@ export function Navbar() {
         : "border-slate-100 bg-white/20 text-slate-900 shadow-sm"
         }`}
     >
-      <div className="relative flex w-full items-center justify-between px-20 py-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3">
         <div className="flex items-center gap-3">
           <Link href="/">
             <Image src="/logo.svg" alt="NUPAL" width={130} height={34} priority />
