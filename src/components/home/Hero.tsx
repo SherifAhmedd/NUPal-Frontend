@@ -1,8 +1,20 @@
 'use client';
 
+import { usePathname } from 'next/navigation';
 import Button from '@/components/ui/Button';
+import { useSmoothScroll } from '@/hooks/useSmoothScroll';
 
 export default function Hero() {
+  const pathname = usePathname();
+  const { scrollToId } = useSmoothScroll(70);
+
+  const handleLearnMoreClick = (e: React.MouseEvent) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      scrollToId('about');
+    }
+  };
+
   return (
     <section id="home" className="relative isolate w-full overflow-hidden py-20">
       <div
@@ -24,7 +36,12 @@ export default function Hero() {
             <Button href="/login" size="lg">
               GET STARTED
             </Button>
-            <Button href="#about" variant="outline" size="lg">
+            <Button
+              href="/#about"
+              variant="outline"
+              size="lg"
+              onClick={handleLearnMoreClick}
+            >
               Learn More
             </Button>
           </div>
