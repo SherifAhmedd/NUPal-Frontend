@@ -80,19 +80,28 @@ export default function ServicesSection() {
             backgroundSize: '400% 400%',
             animation: 'gradient 20s ease infinite'
           }}>
-            {services.map((service) => {
+            {services.map((service, serviceIndex) => {
               const isActive = activeService === service.id;
-              const serviceIndex = services.findIndex(s => s.id === service.id);
               const activeIndex = services.findIndex(s => s.id === activeService);
-              let zIndex = 0;
-              if (isActive) zIndex = 30; else if (serviceIndex < activeIndex) zIndex = 10; else zIndex = 20;
-              let translateX = '100%';
-              if (isActive) translateX = '0%'; else if (serviceIndex < activeIndex) translateX = '0%';
+
+              const zIndex = 10 + serviceIndex;
+              const translateX = serviceIndex <= activeIndex ? '0%' : '100%';
+
               return (
-                <div key={service.id} className="absolute inset-0 transition-transform duration-700 ease-in-out" style={{ transform: `translateX(${translateX})`, zIndex }}>
+                <div
+                  key={service.id}
+                  className="absolute inset-0 transition-all duration-700 ease-in-out"
+                  style={{ transform: `translateX(${translateX})`, zIndex }}
+                >
                   <div className="absolute inset-0 bg-white/98 backdrop-blur-sm rounded-2xl p-[15px] shadow-xl" style={{ background: 'linear-gradient(to bottom, #dbeafe 0%, #2563eb 100%)' }}>
-                    <div className="h-full w-full bg-white/98 backdrop-blur-sm overflow-hidden">
-                      <Image src={service.image} alt={service.title} width={600} height={400} className="h-full w-full object-cover" />
+                    <div className="h-full w-full bg-white/98 backdrop-blur-sm overflow-hidden rounded-xl">
+                      <Image
+                        src={service.image}
+                        alt={service.title}
+                        width={600}
+                        height={400}
+                        className={`h-full w-full object-cover transition-transform duration-1000 ${isActive ? 'scale-100' : 'scale-110'}`}
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent" />
                     </div>
                   </div>

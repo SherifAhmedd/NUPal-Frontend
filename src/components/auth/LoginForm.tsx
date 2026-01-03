@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Eye, EyeOff } from 'lucide-react';
 import { API_ENDPOINTS } from '@/config/api';
 import Button from '@/components/ui/Button';
 
@@ -11,7 +10,6 @@ export default function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const [err, setErr] = useState('');
 
@@ -81,7 +79,7 @@ export default function LoginForm() {
             style={{ animation: 'waveFloat 10s ease-in-out infinite', animationDelay: '0.8s' }}
           />
           <path
-            d="M0,350L30,348C60,346,120,342,180,340C240,338,300,338,360,342C420,346,480,354,540,358C600,362,660,362,720,360C780,358,840,354,900,352C960,350,1020,350,1080,352C1140,354,1200,358,1260,360C1320,362,1380,362,1410,362L1440,362L1440,700L1410,700C1380,700,1320,700,1260,700C1200,700,1140,700,1080,700,1020,700,960,700,900,700,840,700,780,700,720,700,660,700,600,700,540,700,480,700,420,700,360,700C300,700,240,700,180,700,120,700,60,700,30,700L0,700Z"
+            d="M0,350L30,348C60,346,120,342,180,340C240,338,300,338,360,342C420,346,480,354,540,358C600,362,660,362,720,360C780,358,840,354,900,352C960,350,1020,350,1080,352C1140,354,1200,358,1260,360C1320,362,1380,362,1410,362L1440,362L1440,700L1410,700C1380,700,1320,700,1260,700,1200,700,1140,700,1080,700,1020,700,960,700,900,700,840,700,780,700,720,700,660,700,600,700,540,700,480,700,420,700,360,700C300,700,240,700,180,700,120,700,60,700,30,700L0,700Z"
             fill="url(#gradient4-login)"
             style={{ animation: 'waveFloat 12s ease-in-out infinite', animationDelay: '1.2s' }}
           />
@@ -146,23 +144,13 @@ export default function LoginForm() {
               <input
                 id="password"
                 name="password"
-                type={showPassword ? 'text' : 'password'}
+                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 pr-10 text-slate-900 shadow-sm transition-colors focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
+                className="w-full rounded-lg border border-slate-300 bg-white px-4 py-3 text-slate-900 shadow-sm transition-colors focus:border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-600/20"
                 placeholder="password"
               />
-              <Button
-                variant="none"
-                size="none"
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                ariaLabel={showPassword ? 'Hide password' : 'Show password'}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700 p-1"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </Button>
             </div>
           </div>
           <Button
