@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getToken, parseJwt, removeToken } from '../../lib/auth';
 import DashboardCard from '../../components/dashboard/DashboardCard';
+import Button from '../../components/ui/Button';
 import { getStudentByEmail, StudentResponse } from '../../services/studentService';
 import { MessageSquare, ArrowRight, ChevronRight, ChevronDown, ChevronUp, Trophy } from 'lucide-react';
 import { useRef } from 'react';
@@ -323,12 +324,14 @@ export default function DashboardPage() {
 
                                                 {feature.id === '03' && (
                                                     <div className="mt-8">
-                                                        <button
+                                                        <Button
                                                             onClick={() => router.push('/chat')}
-                                                            className="bg-slate-900 hover:bg-slate-800 text-white px-8 py-3 rounded-xl text-sm font-black transition-all hover:shadow-xl active:scale-95"
+                                                            variant="primary"
+                                                            size="md"
+                                                            className="px-8 !bg-slate-900 hover:!bg-slate-800"
                                                         >
                                                             Get recommendations
-                                                        </button>
+                                                        </Button>
                                                     </div>
                                                 )}
                                             </div>

@@ -24,6 +24,7 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { Maximize2, Minimize2, RotateCcw, ZoomIn, ZoomOut, ChevronsUpDown, ChevronsDownUp, ChevronRight, X } from 'lucide-react';
+import Button from '../ui/Button';
 
 interface MindMapNodeData {
     label: string;
@@ -82,14 +83,16 @@ const MindMapNode = ({ data, id }: { data: MindMapNodeData; id: string }) => {
                     </span>
 
                     {data.level < 3 && typeof data.onToggle === 'function' && (
-                        <button
+                        <Button
+                            variant="none"
+                            size="none"
                             onClick={handleToggle}
                             className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 shadow-sm cursor-pointer z-50
                             ${isRoot ? 'bg-white/20 text-white hover:bg-white/30' :
                                     isSemester ? 'bg-white/80 text-indigo-700 hover:bg-white' :
                                         'bg-white/80 text-green-700 hover:bg-white'}`}>
                             <ChevronRight size={16} className={`transform transition-transform duration-300 ${isCollapsed ? 'rotate-0' : 'rotate-180'}`} />
-                        </button>
+                        </Button>
                     )}
                 </div>
 
@@ -297,12 +300,14 @@ const ControlButton = ({ onClick, icon: Icon, label, active = false }: { onClick
             </div>
         </div>
 
-        <button
+        <Button
+            variant="none"
+            size="none"
             onClick={onClick}
             className={`p-2 rounded-xl transition-all active:scale-95 flex items-center justify-center ${active ? 'bg-slate-100 text-blue-600' : 'hover:bg-slate-50 text-slate-600 hover:text-slate-900'}`}
         >
             <Icon size={16} />
-        </button>
+        </Button>
     </div>
 );
 

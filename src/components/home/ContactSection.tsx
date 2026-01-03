@@ -2,6 +2,7 @@
 import { useState } from 'react';
 
 import { submitContactMessage } from '@/services/contactService';
+import Button from '../ui/Button';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({ studentName: '', studentEmail: '', message: '' });
@@ -70,7 +71,15 @@ export default function ContactSection() {
               <textarea id="message" name="message" rows={6} value={formData.message} onChange={handleInputChange} required className="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 shadow-sm transition-colors focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20" placeholder="Tell us about your question or how we can help you with your academic journey..." />
             </div>
             <div className="pt-4 space-y-4">
-              <button type="submit" disabled={isSubmitting} className="rounded-lg bg-blue-400 px-8 py-3 text-base font-semibold uppercase text-white transition-colors duration-200 hover:bg-blue-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50">{isSubmitting ? 'SUBMITTING...' : 'SEND MESSAGE'}</button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                variant="primary"
+                size="lg"
+                className="px-8 uppercase"
+              >
+                {isSubmitting ? 'SUBMITTING...' : 'SEND MESSAGE'}
+              </Button>
               {statusMessage && (
                 <div className={`rounded-lg p-3 text-sm font-medium ${statusMessage.type === 'success' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
                   {statusMessage.text}

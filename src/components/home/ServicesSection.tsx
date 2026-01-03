@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { services } from '@/data/services';
+import Button from '../ui/Button';
 
 export default function ServicesSection() {
   const [activeService, setActiveService] = useState(services[0].id);
@@ -24,8 +25,10 @@ export default function ServicesSection() {
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex flex-wrap justify-center gap-3">
             {services.map((service) => (
-              <button
+              <Button
                 key={service.id}
+                variant="none"
+                size="none"
                 onClick={() => handleServiceChange(service.id)}
                 className={`rounded-full px-6 py-2.5 text-sm font-semibold uppercase transition-all duration-200 ${activeService === service.id
                   ? 'bg-blue-400 text-white shadow-md shadow-blue-500/30'
@@ -33,7 +36,7 @@ export default function ServicesSection() {
                   }`}
               >
                 {service.title}
-              </button>
+              </Button>
             ))}
           </div>
         </div>
@@ -46,11 +49,13 @@ export default function ServicesSection() {
               const isOpen = openService === service.id;
               return (
                 <div key={service.id} className="border-b border-blue-200">
-                  <button
+                  <Button
+                    variant="none"
+                    size="none"
                     onClick={() => handleServiceToggle(service.id)}
                     className="flex w-full items-center justify-between py-6 text-left"
                   >
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 justify-start w-full">
                       <div className={`h-1 w-1 rounded-full transition-all duration-300 ${isOpen ? 'h-12 w-1 bg-blue-400' : 'bg-blue-300'
                         }`} />
                       <h3 className="text-xl font-bold text-slate-900">{service.title}</h3>
@@ -58,7 +63,7 @@ export default function ServicesSection() {
                     <svg className={`h-5 w-5 text-slate-600 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
-                  </button>
+                  </Button>
                   <div className={`overflow-hidden transition-all duration-500 ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="pb-6 pl-5">
                       <p className="mb-4 text-base leading-relaxed text-slate-600">{service.description}</p>

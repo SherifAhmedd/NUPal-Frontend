@@ -3,6 +3,7 @@ import { StudentResponse } from '../../services/studentService';
 import { Course, RoadmapCategory, CourseStatus } from '../../types/roadmap';
 import RoadmapColumn from './RoadmapColumn';
 import { Search, Filter, LayoutGrid, List, Flag, Trophy, ArrowRight } from 'lucide-react';
+import Button from '../ui/Button';
 
 interface AcademicPlanBoardProps {
     studentData: StudentResponse;
@@ -438,20 +439,24 @@ const AcademicPlanBoard: React.FC<AcademicPlanBoardProps> = ({ studentData }) =>
                     </div>
 
                     <div className="flex items-center bg-white p-1 rounded-lg border border-slate-200 shadow-sm">
-                        <button
+                        <Button
+                            variant="none"
+                            size="none"
                             onClick={() => setViewMode('category')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'category' ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             <LayoutGrid className="w-4 h-4" />
                             <span className="hidden md:inline">Category</span>
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                            variant="none"
+                            size="none"
                             onClick={() => setViewMode('semester')}
                             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all ${viewMode === 'semester' ? 'bg-slate-100 text-slate-900' : 'text-slate-500 hover:text-slate-700'}`}
                         >
                             <List className="w-4 h-4" />
                             <span className="hidden md:inline">Semester</span>
-                        </button>
+                        </Button>
                     </div>
                 </div>
             </div>
