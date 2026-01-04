@@ -20,7 +20,7 @@ export default function ServicesSection() {
   };
 
   return (
-    <section id="services" className="bg-white pb-16">
+    <section id="services" className="bg-white pb-16 overflow-hidden">
       <div className="border-b border-blue-200 bg-white">
         <div className="mx-auto max-w-7xl px-6 py-4">
           <div className="flex flex-wrap justify-center gap-3">
@@ -44,7 +44,7 @@ export default function ServicesSection() {
 
       <div className="mx-auto max-w-7xl px-6 pb-16 pt-8">
         <div className="grid grid-cols-1 gap-0 lg:grid-cols-2">
-          <div className="space-y-0 border-r border-blue-200 pr-8">
+          <div className="relative z-10 space-y-0 border-r border-blue-200 pr-8">
             {services.map((service) => {
               const isOpen = openService === service.id;
               return (
@@ -67,7 +67,7 @@ export default function ServicesSection() {
                   <div className={`overflow-hidden transition-all duration-500 ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                     <div className="pb-6 pl-5">
                       <p className="mb-4 text-base leading-relaxed text-slate-600">{service.description}</p>
-                      <Link href="/login" className="text-sm font-semibold text-indigo-600 underline hover:text-blue-500">Take a guided tour</Link>
+                      <Link href={service.path} className="text-sm font-semibold text-indigo-600 underline hover:text-blue-500">Take a guided tour</Link>
                     </div>
                   </div>
                 </div>
@@ -75,39 +75,81 @@ export default function ServicesSection() {
             })}
           </div>
 
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl ml-8 shadow-xl" style={{
-            background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 25%, #e0e7ff 50%, #ddd6fe 75%, #f3e8ff 100%)',
-            backgroundSize: '400% 400%',
-            animation: 'gradient 20s ease infinite'
-          }}>
-            {services.map((service, serviceIndex) => {
-              const isActive = activeService === service.id;
-              const activeIndex = services.findIndex(s => s.id === activeService);
+          <div className="relative aspect-[4/3] w-full ml-12">
+            {/* Slanted Accent Line */}
+            <div
+              className="absolute bottom-[-13%] left-0 w-[150vw] h-24 bg-blue-400/90 origin-left"
+              style={{
+                transform: 'translateX(-48px) skewY(-7deg)',
+                zIndex: 5
+              }}
+            />
 
-              const zIndex = 10 + serviceIndex;
-              const translateX = serviceIndex <= activeIndex ? '0%' : '100%';
+            {/* Expanded the container vertically with py-20 to allow shadows to show, then used p-20 to position images back */}
+            <div className="absolute -top-20 -bottom-20 left-0 w-[140%] overflow-hidden pointer-events-none">
+              <div className="relative h-full w-full p-20">
+                {services.map((service, serviceIndex) => {
+                  const isActive = activeService === service.id;
+                  const activeIndex = services.findIndex(s => s.id === activeService);
 
-              return (
-                <div
-                  key={service.id}
-                  className="absolute inset-0 transition-all duration-700 ease-in-out"
-                  style={{ transform: `translateX(${translateX})`, zIndex }}
-                >
-                  <div className="absolute inset-0 bg-white/98 backdrop-blur-sm rounded-2xl p-[15px] shadow-xl" style={{ background: 'linear-gradient(to bottom, #dbeafe 0%, #2563eb 100%)' }}>
-                    <div className="h-full w-full bg-white/98 backdrop-blur-sm overflow-hidden rounded-xl">
-                      <Image
-                        src={service.image}
-                        alt={service.title}
-                        width={600}
-                        height={400}
-                        className={`h-full w-full object-cover transition-transform duration-1000 ${isActive ? 'scale-100' : 'scale-110'}`}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent" />
+                  const zIndex = 10 + serviceIndex;
+                  // Adjusted to 5% to compensate for the p-20 padding and show 75%+ of the image
+                  const translateX = serviceIndex <= activeIndex ? '5%' : '100%';
+
+                  return (
+                    <div
+                      key={service.id}
+                      className="absolute inset-x-20 inset-y-20 transition-transform duration-700 ease-in-out pointer-events-auto"
+                      style={{
+                        transform: `translateX(${translateX})`,
+                        zIndex: zIndex,
+                      }}
+                    >
+                      <div className={`h-full w-full bg-white border border-slate-200 flex flex-col rounded-xl overflow-hidden transition-all duration-300 ${isActive ? 'shadow-[0_25px_50px_-12px_rgba(0,0,0,0.18)]' : ''}`}>
+                        {/* Browser Header */}
+                        <div className="flex items-center gap-4 px-5 py-2 border-b border-slate-100 bg-slate-50/50">
+                          <div className="flex gap-1.5">
+                            <div className="h-2 w-2 rounded-full bg-slate-200" />
+                            <div className="h-2 w-2 rounded-full bg-slate-200" />
+                            <div className="h-2 w-2 rounded-full bg-slate-200" />
+                          </div>
+                          <div className="flex-1">
+                            <div
+                              className="bg-white border border-slate-100 rounded py-0.5 px-3 text-[10px] text-slate-400 font-medium tracking-tight shadow-sm text-left"
+                              dir="ltr"
+                            >
+                              nupal.edu/{service.id.replace('academic-map', 'dashboard').replace('academic-plan', 'dashboard').replace('tracks-map', 'dashboard')}
+                            </div>
+                          </div>
+                        </div>
+                        {/* Image Content - Individual customization area for each service */}
+                        <div className={`flex-1 overflow-hidden transition-colors duration-300 ${service.id === 'academic-map' ? 'bg-white p-0' :
+                          service.id === 'academic-plan' ? 'bg-white p-0' :
+                            service.id === 'tracks-map' ? 'bg-white p-0' :
+                              service.id === 'chatbot' ? 'bg-white p-0' :
+                                service.id === 'career-hub' ? 'bg-white p-0' :
+                                  'bg-white p-0'
+                          }`}>
+                          <Image
+                            src={service.image}
+                            alt={service.title}
+                            width={800}
+                            height={600}
+                            className={`h-full w-full transition-all duration-500 ${service.id === 'academic-map' ? 'object-contain' :
+                              service.id === 'academic-plan' ? 'object-cover object-left-top' :
+                                service.id === 'tracks-map' ? 'object-cover object-left-top' :
+                                  service.id === 'chatbot' ? 'object-cover object-left-top' :
+                                    service.id === 'career-hub' ? 'object-cover object-left-top' :
+                                      'object-contain'
+                              }`}
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
