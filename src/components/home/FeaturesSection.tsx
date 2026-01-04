@@ -117,7 +117,7 @@ export default function FeaturesSection() {
         {features.map((feature) => (
           <Link
             key={feature.id}
-            href="/login"
+            href={feature.path}
             onClick={(e) => {
               if (hasMoved) {
                 e.preventDefault();

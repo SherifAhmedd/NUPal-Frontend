@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function AboutIntroSection() {
   return (
@@ -45,10 +46,33 @@ export default function AboutIntroSection() {
             </div>
             <div className="pt-8 border-t border-slate-100">
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div className="flex items-center gap-3"><div className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center"><span className="text-blue-400 text-[10px] font-bold">AI</span></div><span className="text-[12px] font-bold text-slate-700 whitespace-nowrap">AI-Powered</span></div>
-                <div className="flex items-center gap-3"><div className="w-8 h-8 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center"><span className="text-indigo-600 text-[10px] font-bold">P</span></div><span className="text-[12px] font-bold text-slate-700 whitespace-nowrap">Personalized</span></div>
-                <div className="flex items-center gap-3"><div className="w-8 h-8 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center"><span className="text-purple-600 text-[10px] font-bold">C</span></div><span className="text-[12px] font-bold text-slate-700 whitespace-nowrap">Comprehensive</span></div>
-                <div className="flex items-center gap-3"><div className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center"><span className="text-blue-400 text-[10px] font-bold">I</span></div><span className="text-[12px] font-bold text-slate-700 whitespace-nowrap">Intuitive</span></div>
+                <Link href="/chat" className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center transition-colors group-hover:bg-blue-200">
+                    <span className="text-blue-400 text-[10px] font-bold">AI</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-slate-700 whitespace-nowrap group-hover:text-blue-500 transition-colors">AI-Powered</span>
+                </Link>
+
+                <Link href="/dashboard" className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-indigo-100 flex items-center justify-center transition-colors group-hover:bg-indigo-200">
+                    <span className="text-indigo-600 text-[10px] font-bold">P</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-slate-700 whitespace-nowrap group-hover:text-indigo-500 transition-colors">Personalized</span>
+                </Link>
+
+                <Link href="/dashboard" className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-purple-100 flex items-center justify-center transition-colors group-hover:bg-purple-200">
+                    <span className="text-purple-600 text-[10px] font-bold">C</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-slate-700 whitespace-nowrap group-hover:text-purple-500 transition-colors">Comprehensive</span>
+                </Link>
+
+                <Link href="/dashboard" className="flex items-center gap-3 group">
+                  <div className="w-8 h-8 flex-shrink-0 rounded-full bg-blue-100 flex items-center justify-center transition-colors group-hover:bg-blue-200">
+                    <span className="text-blue-400 text-[10px] font-bold">I</span>
+                  </div>
+                  <span className="text-[12px] font-bold text-slate-700 whitespace-nowrap group-hover:text-blue-500 transition-colors">Intuitive</span>
+                </Link>
               </div>
             </div>
           </div>
