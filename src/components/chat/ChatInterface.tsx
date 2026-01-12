@@ -156,12 +156,12 @@ export default function ChatInterface({
   return (
     <div className="flex h-full flex-1 flex-col bg-white overflow-hidden">
       {/* Messages Area */}
-      <div className={`flex-1 overflow-y-auto px-6 ${!chatId ? 'flex items-center justify-center pb-20' : 'py-6'}`}>
+      <div className={`flex-1 overflow-y-auto px-4 md:px-6 pt-16 md:pt-6 pb-4 md:pb-6 ${!chatId ? 'flex items-center justify-center' : ''}`}>
         {!chatId ? (
-          <div className="w-full max-w-2xl px-4 text-center">
+          <div className="w-full max-w-2xl px-2 text-center pb-20">
             {/* Centered Initial View */}
-            <div className="mb-4">
-              <h2 className="text-xl font-medium text-slate-700">
+            <div className="mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-slate-800">
                 How can I help you today?
               </h2>
             </div>
@@ -196,7 +196,7 @@ export default function ChatInterface({
 
       {/* Persistent Bottom Input Area (Only visible when a chat is selected) */}
       {chatId && (
-        <div className="border-t border-slate-200 bg-white px-6 py-4">
+        <div className="border-t border-slate-200 bg-white px-4 py-3 md:px-6 md:py-4">
           {renderInputForm(false)}
         </div>
       )}

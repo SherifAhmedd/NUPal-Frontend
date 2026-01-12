@@ -72,13 +72,13 @@ const MindMapNode = ({ data, id }: { data: MindMapNodeData; id: string }) => {
                 <Handle type="target" position={Position.Left} className="!w-0 !h-0 !opacity-0 !border-none !p-0" style={{ left: '2px', top: '50%' }} />
 
                 <div className={`py-1.5 rounded-full shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border-2 transition-all duration-300 flex items-center justify-between hover:brightness-[0.95] 
-                    ${data.level === 3 ? 'px-3 min-w-[100px] justify-center gap-1.5' : 'px-6 min-w-[200px] gap-6'}
+                    ${data.level === 3 ? 'px-3 min-w-[100px] justify-center gap-1.5' : 'px-4 md:px-6 min-w-[160px] md:min-w-[200px] gap-3 md:gap-6'}
                     ${isRoot ? 'bg-indigo-600 text-white border-indigo-400' :
                         isSemester ? 'bg-[#D1D9FF] text-[#1E293B] border-[#BCC6FF]' :
                             data.level === 3 ? 'bg-white text-emerald-700 border-emerald-100 shadow-sm' :
                                 'bg-[#E7F7F0] text-[#1E293B] border-[#D1EEDD]'}`}>
 
-                    <span className={`tracking-tight whitespace-nowrap ${data.level === 3 ? 'text-[13px] font-bold' : 'text-[15px] font-extrabold'}`}>
+                    <span className={`tracking-tight whitespace-nowrap ${data.level === 3 ? 'text-[11px] md:text-[13px] font-bold' : 'text-[12px] md:text-[15px] font-extrabold'}`}>
                         {data.label}
                     </span>
 
@@ -323,6 +323,11 @@ const MindMapContent = ({ data, externalTrackId, onBackToPersonal }: { data: any
     const [activeTrackNodeId, setActiveTrackNodeId] = useState<string | null>(null);
     const { fitView, zoomIn, zoomOut, getViewport, setViewport } = useReactFlow();
     const isStandalone = !!externalTrackId;
+
+    // Reset hasBroughtToLife when mapMode changes to force a fitView
+    useEffect(() => {
+        setHasBroughtToLife(false);
+    }, [mapMode]);
 
     // Sync externalTrackId to mapMode and auto-trigger fullscreen
     useEffect(() => {
@@ -731,8 +736,20 @@ const MindMapContent = ({ data, externalTrackId, onBackToPersonal }: { data: any
             const padding = mapMode === 'personal' ? 0.15 : 0.2;
             const minZoom = mapMode === 'personal' ? 0.4 : 0.1;
             const maxZoom = mapMode === 'personal' ? 1.5 : 0.8;
-            const performFit = () => fitView({ duration, padding, minZoom, maxZoom });
-            setTimeout(performFit, delay);
+            const performFit = () => {
+                // Use standard fitView with smooth animation for both mobile and desktop
+                // Adjust zoom limits for mobile to ensure content fits properly
+                const isMobile = window.innerWidth < 768;
+                fitView({
+                    duration: 800,
+                    padding: isMobile ? 0.2 : padding,
+                    minZoom: isMobile ? 0.2 : minZoom, // Allow zooming out more on mobile to fit width
+                    maxZoom
+                });
+            };
+
+            // Small delay to ensure graph is rendered before fitting
+            setTimeout(performFit, isStandalone ? 100 : delay);
         }
     }, [collapsedIds, fitView, nodes, edges, lastAction, hasBroughtToLife, mapMode]);
 
@@ -799,7 +816,7 @@ const MindMapContent = ({ data, externalTrackId, onBackToPersonal }: { data: any
                 </div>
             </Panel>
 
-            <Panel position="bottom-right" className="flex flex-col gap-2 m-4 scale-90 origin-bottom-right">
+            <Panel position="bottom-right" className="flex flex-col gap-2 m-4 scale-75 md:scale-90 origin-bottom-right">
                 {mapMode === 'personal' && (
                     <div className="flex flex-col gap-1 bg-white border border-slate-200 rounded-[1.25rem] shadow-lg p-1">
                         {collapsedIds.size === 0 ? (
@@ -847,9 +864,9 @@ const MindMapContent = ({ data, externalTrackId, onBackToPersonal }: { data: any
             {isFullscreen && mounted ? createPortal(
                 <div className={`fixed inset-0 z-[99999] bg-slate-900/10 backdrop-blur-md flex items-center justify-center p-4 md:p-8 ${mapMode !== 'personal' ? 'animate-in fade-in duration-700' : ''}`}>
                     <div className={`w-full h-full bg-white rounded-[2.5rem] shadow-2xl border border-white/50 overflow-hidden relative ${mapMode !== 'personal' ? 'animate-in zoom-in-95 duration-700' : ''}`}>
-                        <div className="absolute top-0 left-0 right-0 p-10 z-20 flex items-start justify-between pointer-events-none">
-                            <div className="pointer-events-auto bg-white/40 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/50 shadow-sm flex items-center gap-4">
-                                <h2 className="text-2xl font-black text-slate-900 tracking-tight">
+                        <div className="absolute top-0 left-0 right-0 p-4 md:p-10 z-20 flex items-start justify-between pointer-events-none">
+                            <div className="pointer-events-auto bg-white/40 backdrop-blur-md px-4 py-2 md:px-6 md:py-3 rounded-2xl border border-white/50 shadow-sm flex items-center gap-4">
+                                <h2 className="text-lg md:text-2xl font-black text-slate-900 tracking-tight">
                                     {mapMode === 'personal'
                                         ? `${data?.account?.name ? data.account.name.split(' ')[0] : 'Academic'}'s Academy Map`
                                         : mapMode === 'general' ? 'General Track'
@@ -864,8 +881,8 @@ const MindMapContent = ({ data, externalTrackId, onBackToPersonal }: { data: any
                 document.body
             ) : (
                 !isStandalone && (
-                    <div className="w-full h-full bg-white transition-all overflow-hidden rounded-3xl border border-slate-100 shadow-inner relative">
-                        <div className="absolute top-6 left-6 z-20 pointer-events-none">
+                    <div className="w-full h-full bg-white transition-all overflow-hidden relative">
+                        <div className="absolute top-6 left-6 z-20 pointer-events-none hidden md:block">
                             <div className="bg-white/60 backdrop-blur-md px-4 py-2 rounded-xl border border-slate-200/50 shadow-sm">
                                 <h2 className="text-sm font-black text-slate-800 tracking-tight">
                                     {data?.account?.name ? data.account.name.split(' ')[0] : 'Academic'}'s Academy Map

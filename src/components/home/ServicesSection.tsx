@@ -162,7 +162,7 @@ export default function ServicesSection() {
                             return (
                                 <div
                                     key={service.id}
-                                    className={`absolute inset-0 p-6 transition-all duration-500 ease-in-out ${opacity}`}
+                                    className={`absolute inset-0 ${service.id === 'chatbot' || service.id === 'academic-plan' ? 'p-2' : 'p-6'} transition-all duration-500 ease-in-out ${opacity}`}
                                     style={{
                                         transform: `translateX(${translateX})`,
                                         zIndex: zIndex,
@@ -187,7 +187,10 @@ export default function ServicesSection() {
                                                 alt={service.title}
                                                 width={400}
                                                 height={300}
-                                                className={`h-full w-full object-contain object-center`}
+                                                className={`h-full w-full transition-all duration-300 ${service.id === 'chatbot' || service.id === 'academic-plan'
+                                                    ? 'object-contain object-left scale-[1.4] origin-left'
+                                                    : 'object-contain object-center'
+                                                    }`}
                                             />
                                         </div>
                                     </div>

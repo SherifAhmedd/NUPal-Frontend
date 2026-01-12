@@ -69,11 +69,25 @@ export default function GPAProgressChart({ data }: GPAProgressChartProps) {
     };
 
     return (
-        <div className="w-full h-full min-h-[400px] p-2">
+        <div className="w-full h-full outline-none focus:outline-none ring-0">
+            <style jsx global>{`
+                .recharts-wrapper,
+                .recharts-surface,
+                .recharts-layer,
+                .recharts-cartesian-grid,
+                .recharts-layer path,
+                .recharts-dot {
+                    outline: none !important;
+                    box-shadow: none !important;
+                }
+                *:focus {
+                    outline: none !important;
+                }
+            `}</style>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                     data={chartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                    margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
                 >
                     <defs>
                         <linearGradient id="colorSemester" x1="0" y1="0" x2="0" y2="1">
@@ -90,8 +104,9 @@ export default function GPAProgressChart({ data }: GPAProgressChartProps) {
                         dataKey="term"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fill: '#FFFFFF', opacity: 0.8, fontSize: 12, fontWeight: 600 }}
+                        tick={{ fill: '#FFFFFF', opacity: 0.8, fontSize: 10, fontWeight: 600 }}
                         dy={10}
+                        interval="preserveStartEnd"
                     />
                     <YAxis
                         domain={[finalMin, finalMax]}
@@ -100,25 +115,38 @@ export default function GPAProgressChart({ data }: GPAProgressChartProps) {
                         axisLine={false}
                         tickLine={false}
                         tick={{ fill: '#FFFFFF', opacity: 0.8, fontSize: 10, fontWeight: 600 }}
-                        dx={-10}
+                        dx={-5}
                     />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend
                         verticalAlign="top"
-                        height={40}
-                        iconType="circle"
-                        formatter={(value) => (
-                            <span className="text-white/90 font-bold text-sm ml-1 mr-4">{value}</span>
-                        )}
+                        content={(props) => {
+                            const { payload } = props;
+                            return (
+                                <div className="flex justify-center items-center gap-6 pb-6">
+                                    {payload?.map((entry: any, index: number) => (
+                                        <div key={`item-${index}`} className="flex items-center gap-2">
+                                            <div
+                                                className="w-2 h-2 rounded-full"
+                                                style={{ backgroundColor: entry.color }}
+                                            />
+                                            <span className="text-white/90 font-bold text-[10px]">
+                                                {entry.value}
+                                            </span>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        }}
                     />
                     <Line
                         name="Semester GPA"
                         type="monotone"
                         dataKey="semesterGpa"
                         stroke="#3B82F6"
-                        strokeWidth={4}
-                        dot={{ r: 6, fill: '#3B82F6', strokeWidth: 2, stroke: '#fff' }}
-                        activeDot={{ r: 8, strokeWidth: 0 }}
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: '#3B82F6', strokeWidth: 2, stroke: '#fff' }}
+                        activeDot={{ r: 6, strokeWidth: 0 }}
                         animationDuration={1500}
                         animationEasing="ease-in-out"
                     />
@@ -127,9 +155,9 @@ export default function GPAProgressChart({ data }: GPAProgressChartProps) {
                         type="monotone"
                         dataKey="cumulativeGpa"
                         stroke="#10B981"
-                        strokeWidth={4}
-                        dot={{ r: 6, fill: '#10B981', strokeWidth: 2, stroke: '#fff' }}
-                        activeDot={{ r: 8, strokeWidth: 0 }}
+                        strokeWidth={3}
+                        dot={{ r: 4, fill: '#10B981', strokeWidth: 2, stroke: '#fff' }}
+                        activeDot={{ r: 6, strokeWidth: 0 }}
                         animationDuration={1500}
                         animationEasing="ease-in-out"
                     />

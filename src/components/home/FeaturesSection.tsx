@@ -117,7 +117,7 @@ export default function FeaturesSection() {
         onMouseUp={handleMouseUp}
         onMouseMove={handleMouseMove}
         onScroll={checkScroll}
-        className="flex gap-8 overflow-x-auto pb-12 pt-4 no-scrollbar cursor-grab active:cursor-grabbing select-none scroll-smooth px-[calc((100vw-1280px)/2+24px)]"
+        className="flex gap-8 overflow-x-auto pb-12 pt-4 no-scrollbar cursor-grab active:cursor-grabbing select-none scroll-smooth px-6 lg:px-[calc((100vw-1280px)/2+24px)]"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {features.map((feature) => (

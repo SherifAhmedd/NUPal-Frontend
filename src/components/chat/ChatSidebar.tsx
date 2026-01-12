@@ -100,9 +100,10 @@ export default function ChatSidebar({
   );
 
   return (
-    <div className="flex h-[calc(100vh-64px)] w-80 flex-shrink-0 flex-col border-r border-slate-200 bg-slate-50">
+    <div className="flex h-full w-full flex-shrink-0 flex-col border-r border-slate-200 bg-slate-50">
       {/* Sidebar Header with Toggle */}
-      <div className="flex items-center justify-end px-4 pt-4 pb-2">
+      <div className="flex items-center justify-between md:justify-end px-4 pt-4 pb-2">
+        <h2 className="text-lg font-bold text-slate-800 md:hidden">My Chats</h2>
         <Button
           variant="none"
           size="none"
@@ -120,8 +121,15 @@ export default function ChatSidebar({
             strokeLinecap="round"
             strokeLinejoin="round"
           >
-            <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
-            <line x1="9" x2="9" y1="3" y2="21" />
+            {/* Show an X on mobile when open, sidebar icon on desktop */}
+            <g className="md:hidden">
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </g>
+            <g className="hidden md:block">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
+              <line x1="9" x2="9" y1="3" y2="21" />
+            </g>
           </svg>
         </Button>
       </div>

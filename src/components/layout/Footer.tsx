@@ -53,7 +53,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/dashboard"
-                  className={`transition hover:text-blue-400 ${pathname === '/dashboard' ? 'text-blue-400' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-400"
                 >
                   Dashboard
                 </Link>
@@ -61,7 +61,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/chat"
-                  className={`transition hover:text-blue-400 ${pathname === '/chat' ? 'text-blue-400' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-400"
                 >
                   Chatbot
                 </Link>
@@ -69,7 +69,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/career-hub"
-                  className={`transition hover:text-blue-400 ${pathname === '/career-hub' ? 'text-blue-400' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-400"
                 >
                   Career Hub
                 </Link>
@@ -198,7 +198,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/dashboard"
-                  className={`transition hover:text-blue-500 font-medium ${pathname === '/dashboard' ? 'text-blue-500' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-500 font-medium"
                 >
                   Dashboard
                 </Link>
@@ -206,7 +206,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/chat"
-                  className={`transition hover:text-blue-500 font-medium ${pathname === '/chat' ? 'text-blue-500' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-500 font-medium"
                 >
                   Chatbot
                 </Link>
@@ -214,7 +214,7 @@ export function Footer() {
               <li>
                 <Link
                   href="/career-hub"
-                  className={`transition hover:text-blue-500 font-medium ${pathname === '/career-hub' ? 'text-blue-500' : 'text-slate-600'}`}
+                  className="text-slate-600 transition hover:text-blue-500 font-medium"
                 >
                   Career Hub
                 </Link>

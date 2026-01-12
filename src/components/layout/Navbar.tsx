@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
 import { getToken, parseJwt, removeToken } from "@/lib/auth";
-import { User, Settings, LogOut, Menu, X } from "lucide-react";
+import { User, Settings, LogOut, Menu, X, Home, Briefcase, MessageSquare, Info, Mail, LayoutDashboard, ChevronRight } from "lucide-react";
 import Button from "@/components/ui/Button";
 
 import { useSmoothScroll } from "@/hooks/useSmoothScroll";
@@ -25,15 +25,16 @@ const navLinks: NavLinkItem[] = [
 ];
 
 const dashboardLinks: NavLinkItem[] = [
-  { name: "Dashboard", path: "/dashboard" },
-  { name: "Chatbot", path: "/chat" },
-  { name: "Career Hub", path: "/career-hub" },
+  { name: "Dashboard", path: "/dashboard", id: "dashboard" },
+  { name: "Chatbot", path: "/chat", id: "chat" },
+  { name: "Career Hub", path: "/career-hub", id: "career-hub" },
 ];
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname() || '';
@@ -80,18 +81,23 @@ export function Navbar() {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setMenuOpen(false);
+        setProfileMenuOpen(false);
       }
     };
 
-    if (menuOpen) {
+    if (profileMenuOpen) {
       document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [menuOpen]);
+  }, [profileMenuOpen]);
+
+  // Close mobile menu on route change
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [pathname]);
 
   useEffect(() => {
     try {
@@ -133,6 +139,7 @@ export function Navbar() {
               onClick={(e) => {
                 e.preventDefault();
                 scrollToTop();
+                setMobileMenuOpen(false);
               }}
             >
               <Image src="/logo.svg" alt="NUPal" width={100} height={34} priority />
@@ -152,7 +159,6 @@ export function Navbar() {
                   <Link
                     key={link.path}
                     href={link.path}
-                    scroll={false}
                     onClick={(e) => {
                       const id = link.id;
                       if (id) {
@@ -169,10 +175,10 @@ export function Navbar() {
 
             <button
               className="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              onClick={() => setMenuOpen(!menuOpen)}
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               aria-label="Toggle menu"
             >
-              {menuOpen ? <X size={24} /> : <Menu size={24} />}
+              {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
 
@@ -181,14 +187,14 @@ export function Navbar() {
               <Button
                 variant="none"
                 size="none"
-                onClick={() => setMenuOpen((v) => !v)}
+                onClick={() => setProfileMenuOpen((v: boolean) => !v)}
                 ariaLabel="Open profile menu"
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-700 shadow-sm transition-all duration-200 hover:bg-slate-50 hover:shadow"
               >
                 <span className="text-sm font-semibold">{initial}</span>
               </Button>
 
-              {menuOpen && (
+              {profileMenuOpen && (
                 <div role="menu" aria-label="Profile menu" className="absolute right-0 mt-2 w-64 rounded-xl border border-slate-200 bg-white/95 p-2 shadow-xl backdrop-blur-sm">
                   <div className="flex items-center gap-3 rounded-lg bg-slate-50/70 px-3 py-3">
                     <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-100 text-slate-700">
@@ -207,7 +213,9 @@ export function Navbar() {
                     variant="none"
                     size="none"
                     className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition-all duration-200 hover:bg-slate-50 justify-start"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => {
+                      setProfileMenuOpen(false);
+                    }}
                     role="menuitem"
                   >
                     <User size={16} aria-hidden="true" />
@@ -218,7 +226,7 @@ export function Navbar() {
                     variant="none"
                     size="none"
                     className="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm text-slate-700 transition-all duration-200 hover:bg-slate-50 justify-start"
-                    onClick={() => setMenuOpen(false)}
+                    onClick={() => setProfileMenuOpen(false)}
                     role="menuitem"
                   >
                     <Settings size={16} aria-hidden="true" />
@@ -257,80 +265,97 @@ export function Navbar() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay - Move out of header to ensure it's on top and opaque */}
+      {/* Mobile Menu Overlay - Solid Full Screen Re-design */}
       <div
-        className={`lg:hidden fixed inset-0 z-[9999] bg-white transition-all duration-300 transform ${menuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
+        className={`lg:hidden fixed inset-0 z-[9999] bg-white transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${mobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-full opacity-0 pointer-events-none'
           }`}
       >
         <div className="flex flex-col h-full bg-white">
           {/* Mobile Menu Header */}
-          <div className="flex items-center justify-between px-6 py-3 border-b border-slate-100 bg-white">
-            <Image src="/logo.svg" alt="NUPal" width={100} height={34} priority />
+          <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+            <Image src="/logo.svg" alt="NUPal" width={90} height={30} priority />
             <button
-              className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
-              onClick={() => setMenuOpen(false)}
+              className="p-2 text-slate-500 hover:bg-slate-100 rounded-full transition-colors border border-slate-100 shadow-sm"
+              onClick={() => setMobileMenuOpen(false)}
               aria-label="Close menu"
             >
-              <X size={24} />
+              <X size={20} />
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col p-6 space-y-6 overflow-y-auto bg-white">
-            {links.map((link) => {
-              const isActive = link.id
-                ? (pathname === '/' && activeSection === link.id)
-                : pathname === link.path;
+          <div className="flex-1 flex flex-col pt-4 overflow-y-auto">
+            <div className="flex flex-col">
+              {links.map((link, index) => {
+                const isActive = link.id
+                  ? (pathname === '/' && activeSection === link.id)
+                  : pathname === link.path;
 
-              return (
-                <Link
-                  key={link.path}
-                  href={link.path}
-                  scroll={false}
-                  onClick={(e) => {
-                    setMenuOpen(false);
-                    const id = link.id;
-                    if (id) {
-                      handleNavClick(e, link.path, id);
-                    }
-                  }}
-                  className={`text-lg font-semibold transition-colors duration-200 ${isActive ? "text-blue-400" : "text-slate-600"
-                    }`}
-                >
-                  {link.name}
-                </Link>
-              );
-            })}
+                return (
+                  <Link
+                    key={link.path}
+                    href={link.path}
+                    onClick={(e) => {
+                      const id = link.id;
+                      if (id && pathname === '/') {
+                        handleNavClick(e, link.path, id);
+                      }
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`flex items-center justify-between px-6 py-5 border-b border-dashed border-slate-100 transition-colors duration-200 ${isActive ? "text-blue-600" : "text-slate-800"
+                      }`}
+                  >
+                    <span className="font-bold text-lg">{link.name}</span>
+                  </Link>
+                );
+              })}
+            </div>
 
-            <div className="pt-6 border-t border-slate-100 flex flex-col gap-4">
+            {/* Grounded Account Section - Stripe Style Actions */}
+            <div className="mt-auto px-6 py-8 bg-slate-50/30">
               {(pathname.startsWith('/dashboard') || pathname === '/chat' || pathname === '/career-hub' || pathname === '/404') ? (
-                <div className="space-y-4">
-                  <div className="flex items-center gap-3 bg-slate-50 p-3 rounded-xl">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-slate-700">
-                      <span className="text-lg font-semibold">{initial}</span>
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center gap-3 mb-2 px-2">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-sm border border-blue-200">
+                      <span className="text-lg font-bold">{initial}</span>
                     </div>
                     <div className="min-w-0">
-                      <div className="truncate text-sm font-semibold text-slate-900">{userName ?? 'NUPal User'}</div>
-                      <div className="truncate text-xs text-slate-500">Account</div>
+                      <div className="truncate text-sm font-bold text-slate-900">{userName ?? 'NUPal User'}</div>
+                      <div className="truncate text-[10px] font-medium text-slate-400 uppercase tracking-wider">My Account</div>
                     </div>
                   </div>
-                  <Button href="/dashboard" variant="outline" className="w-full justify-start gap-3" onClick={() => setMenuOpen(false)}>
-                    <User size={18} /> Profile
-                  </Button>
-                  <Button
-                    variant="none"
-                    className="w-full justify-start gap-3 text-red-600 bg-red-50 hover:bg-red-100 p-3 rounded-xl"
-                    onClick={() => {
-                      removeToken();
-                      window.location.href = '/';
-                    }}
-                  >
-                    <LogOut size={18} /> Logout
-                  </Button>
+
+                  <div className="flex items-center gap-3">
+                    <Button
+                      href="/dashboard"
+                      variant="primary"
+                      className="flex-1 py-4 rounded-xl text-sm font-bold justify-center shadow-md bg-blue-400 hover:bg-blue-500 transition-all active:scale-95 shadow-blue-500/25"
+                      onClick={() => setMobileMenuOpen(false)} // Close mobile menu when navigating to profile
+                    >
+                      Profile <ChevronRight size={16} className="ml-1" />
+                    </Button>
+                    <Button
+                      variant="none"
+                      className="flex-1 py-4 rounded-xl text-sm font-bold justify-center text-red-600 bg-red-50 hover:bg-red-100 transition-all border border-red-100 active:scale-95"
+                      onClick={() => {
+                        removeToken();
+                        window.location.href = '/';
+                      }}
+                    >
+                      Logout
+                    </Button>
+                  </div>
                 </div>
               ) : (
-                <Button href="/login" className="w-full" onClick={() => setMenuOpen(false)}>
-                  LOGIN
-                </Button>
+                <div className="flex items-center">
+                  <Button
+                    href="/login"
+                    variant="primary"
+                    className="w-full py-4 rounded-xl font-bold text-sm bg-blue-400 hover:bg-blue-500 shadow-lg shadow-blue-500/25 transition-all active:scale-95"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Login
+                  </Button>
+                </div>
               )}
             </div>
           </div>
