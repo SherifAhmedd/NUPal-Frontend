@@ -88,25 +88,25 @@ export default function ServicesSection() {
                                     zIndex: 5
                                 }}
                             />
-                            <div className="absolute -top-20 -bottom-20 left-0 w-[140%] pointer-events-none">
+                            <div className="absolute -top-20 -bottom-60 left-10 w-[120%] overflow-hidden rounded-xl z-10 pointer-events-none">
                                 <div className="relative h-full w-full p-20">
                                     {services.map((service, serviceIndex) => {
                                         const isActive = activeService === service.id;
                                         const activeIndex = services.findIndex(s => s.id === activeService);
                                         const zIndex = 10 + serviceIndex;
                                         // Desktop Peek Logic: active is at 5%, future are at 100%
-                                        const translateX = serviceIndex <= activeIndex ? '5%' : '100%';
+                                        const translateX = serviceIndex <= activeIndex ? '0%' : '100%';
 
                                         return (
                                             <div
                                                 key={service.id}
-                                                className="absolute inset-x-20 inset-y-20 transition-transform duration-700 ease-in-out pointer-events-auto"
+                                                className="absolute inset-x-0   top-20 bottom-52 transition-transform duration-700 ease-in-out pointer-events-auto"
                                                 style={{
                                                     transform: `translateX(${translateX})`,
                                                     zIndex: zIndex,
                                                 }}
                                             >
-                                                <div className={`h-full w-full bg-white border border-slate-200 flex flex-col rounded-xl overflow-hidden transition-all duration-300 ${isActive ? 'shadow-[0_25px_50px_-12px_rgba(0,0,0,0.18)]' : ''}`}>
+                                                <div className={`h-full w-full bg-white border border-slate-200 flex flex-col rounded-xl overflow-hidden transition-all duration-300 ${isActive ? 'shadow-[0_25px_50px_-45px_rgba(0,0,0,0.25)]' : ''}`}>
                                                     {/* Browser Header */}
                                                     <div className="flex items-center gap-4 px-5 py-2 border-b border-slate-100 bg-slate-50/50">
                                                         <div className="flex gap-1.5">
@@ -130,7 +130,7 @@ export default function ServicesSection() {
                                                             alt={service.title}
                                                             width={800}
                                                             height={600}
-                                                            className={`h-full w-full transition-all duration-500 ${service.id === 'academic-map' ? 'object-contain' : 'object-cover object-left-top'
+                                                            className={`h-full w-full transition-all duration-500 ${service.id === 'chatbot' || service.id === 'career-hub' ? 'object-cover object-left-top' : 'object-contain'
                                                                 }`}
                                                         />
                                                     </div>
@@ -139,16 +139,16 @@ export default function ServicesSection() {
                                         );
                                     })}
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                            </div >
+                        </div >
+                    </div >
+                </div >
+            </div >
 
             {/* MOBILE VIEW - lg:hidden only */}
-            <div className="lg:hidden flex flex-col pt-8">
+            < div className="lg:hidden flex flex-col pt-8" >
                 {/* 1. Image Mockup on Top */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden mb-8">
+                < div className="relative aspect-[4/3] w-full overflow-hidden mb-8" >
                     <div className="relative h-full w-full">
                         {services.map((service, serviceIndex) => {
                             const isActive = activeService === service.id;
@@ -187,7 +187,7 @@ export default function ServicesSection() {
                                                 alt={service.title}
                                                 width={400}
                                                 height={300}
-                                                className={`h-full w-full transition-all duration-300 ${service.id === 'chatbot' || service.id === 'academic-plan'
+                                                className={`h-full w-full transition-all duration-300 ${service.id === 'chatbot'
                                                     ? 'object-contain object-left scale-[1.4] origin-left'
                                                     : 'object-contain object-center'
                                                     }`}
@@ -198,10 +198,10 @@ export default function ServicesSection() {
                             );
                         })}
                     </div>
-                </div>
+                </div >
 
                 {/* 2. Horizontal Tab Navigation (Pill-style like desktop) */}
-                <div className="px-6 mb-8 overflow-x-auto no-scrollbar">
+                < div className="px-6 mb-8 overflow-x-auto no-scrollbar" >
                     <div className="flex gap-2 min-w-max pb-2">
                         {services.map((service) => {
                             const isActive = activeService === service.id;
@@ -221,10 +221,10 @@ export default function ServicesSection() {
                             );
                         })}
                     </div>
-                </div>
+                </div >
 
                 {/* 3. Single Content Card (Focused like desktop) */}
-                <div className="px-6 mb-12">
+                < div className="px-6 mb-12" >
                     <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] border border-slate-50 relative overflow-hidden min-h-[220px] flex flex-col items-center justify-center text-center">
                         {services.map((service) => {
                             const isActive = activeService === service.id;
@@ -244,8 +244,8 @@ export default function ServicesSection() {
                             );
                         })}
                     </div>
-                </div>
-            </div>
-        </section>
+                </div >
+            </div >
+        </section >
     );
 }
