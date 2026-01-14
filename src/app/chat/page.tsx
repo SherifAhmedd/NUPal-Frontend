@@ -50,6 +50,22 @@ export default function ChatPage() {
     }
   }, []);
 
+  // Clear active chat ID from localStorage when navigating away from chat route
+  useEffect(() => {
+    return () => {
+      // Cleanup function runs when component unmounts (navigating away)
+      localStorage.removeItem('activeChatId');
+    };
+  }, []);
+
+  // Restore active chat ID from localStorage after mount (avoids hydration mismatch)
+  useEffect(() => {
+    const savedChatId = localStorage.getItem('activeChatId');
+    if (savedChatId) {
+      setActiveChatId(savedChatId);
+    }
+  }, []);
+
   const toggleSidebar = useCallback(() => {
     setIsSidebarOpen((prev) => !prev);
   }, []);
@@ -80,6 +96,8 @@ export default function ChatPage() {
 
   const handleNewChat = useCallback(() => {
     setActiveChatId(null);
+    // Clear from localStorage when starting new chat
+    localStorage.removeItem('activeChatId');
     if (window.innerWidth < 768) {
       setIsSidebarOpen(false);
     }
@@ -265,6 +283,8 @@ export default function ChatPage() {
 
     if (activeChatId === chatId) {
       setActiveChatId(null);
+      // Clear from localStorage if deleting active chat
+      localStorage.removeItem('activeChatId');
     }
 
     try {
@@ -306,6 +326,8 @@ export default function ChatPage() {
   // Fetch messages when selecting a chat
   const handleSelectChat = useCallback(async (chatId: string) => {
     setActiveChatId(chatId);
+    // Save to localStorage for persistence on refresh
+    localStorage.setItem('activeChatId', chatId);
 
     // Auto-close sidebar on mobile
     if (window.innerWidth < 768) {
