@@ -171,26 +171,27 @@ export function Footer() {
       </div>
 
       {/* MOBILE VIEW - Refined Layout */}
-      <div className="md:hidden mx-auto max-w-7xl px-6 py-12">
+      {/* MOBILE VIEW - Refined Layout - Compacted */}
+      <div className="md:hidden mx-auto max-w-7xl px-6 py-6">
         {/* Logo & Description - Centered */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-6">
           <Link
             href="/"
             onClick={(e) => {
               e.preventDefault();
               scrollToTop();
             }}
-            className="inline-block mb-4"
+            className="inline-block mb-2"
           >
-            <Image src="/logo.svg" alt="NUPal" width={120} height={40} priority />
+            <Image src="/logo.svg" alt="NUPal" width={90} height={30} priority />
           </Link>
-          <p className="text-sm leading-relaxed text-slate-600 max-w-sm mx-auto">
+          <p className="text-xs leading-relaxed text-slate-600 max-w-xs mx-auto">
             Empowering students to make informed academic decisions and achieve their educational goals.
           </p>
         </div>
 
         {/* Links Grid - 2 Columns */}
-        <div className="grid grid-cols-2 gap-8 mb-10">
+        <div className="grid grid-cols-2 gap-4 mb-6">
           {/* Platform Column */}
           <div className="text-center">
             <h3 className="mb-4 text-xs font-black uppercase tracking-widest text-blue-500">Platform</h3>
@@ -261,12 +262,12 @@ export function Footer() {
         </div>
 
         {/* Social Media - Centered */}
-        <div className="text-center mb-8">
-          <h3 className="mb-5 text-xs font-black uppercase tracking-widest text-blue-500">Follow Us</h3>
+        <div className="text-center mb-6">
+          <h3 className="mb-3 text-xs font-black uppercase tracking-widest text-blue-500">Follow Us</h3>
           <div className="flex gap-3 justify-center">
             <a
               href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
               aria-label="Facebook"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -276,7 +277,7 @@ export function Footer() {
 
             <a
               href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
               aria-label="Twitter"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -286,7 +287,7 @@ export function Footer() {
 
             <a
               href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
               aria-label="LinkedIn"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -296,7 +297,7 @@ export function Footer() {
 
             <a
               href="#"
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
+              className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition-all duration-300 hover:bg-blue-500 hover:text-white hover:shadow-lg hover:shadow-blue-500/30 active:scale-95"
               aria-label="Instagram"
             >
               <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
