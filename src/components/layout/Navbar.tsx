@@ -151,9 +151,9 @@ export function Navbar() {
               className="hidden lg:flex items-center gap-10 text-sm font-semibold text-slate-600"
             >
               {links.map((link) => {
-                const isActive = link.id
+                const isActive = link.path.includes('#')
                   ? (pathname === '/' && activeSection === link.id)
-                  : pathname === link.path;
+                  : (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)));
 
                 return (
                   <Link
@@ -286,9 +286,9 @@ export function Navbar() {
           <div className="flex-1 flex flex-col pt-4 overflow-y-auto">
             <div className="flex flex-col">
               {links.map((link, index) => {
-                const isActive = link.id
+                const isActive = link.path.includes('#')
                   ? (pathname === '/' && activeSection === link.id)
-                  : pathname === link.path;
+                  : (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)));
 
                 return (
                   <Link
@@ -301,7 +301,7 @@ export function Navbar() {
                       }
                       setMobileMenuOpen(false);
                     }}
-                    className={`flex items-center justify-between px-6 py-5 border-b border-dashed border-slate-100 transition-colors duration-200 ${isActive ? "text-blue-600" : "text-slate-800"
+                    className={`flex items-center justify-between px-6 py-5 border-b border-dashed border-slate-100 transition-colors duration-200 ${isActive ? "text-blue-500" : "text-slate-800"
                       }`}
                   >
                     <span className="font-bold text-lg">{link.name}</span>
@@ -310,38 +310,43 @@ export function Navbar() {
               })}
             </div>
 
-            {/* Grounded Account Section - Stripe Style Actions */}
-            <div className="mt-auto px-6 py-8 bg-slate-50/30">
+            {/* Mobile-Native Account Section */}
+            <div className="mt-auto px-4 py-4 bg-slate-50/50 border-t border-slate-100">
               {(pathname.startsWith('/dashboard') || pathname === '/chat' || pathname === '/career-hub' || pathname === '/404') ? (
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center gap-3 mb-2 px-2">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-blue-700 shadow-sm border border-blue-200">
-                      <span className="text-lg font-bold">{initial}</span>
+                <div className="space-y-3">
+                  {/* User Info - Horizontal Layout */}
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                      <span className="text-base font-bold">{initial}</span>
                     </div>
-                    <div className="min-w-0">
+                    <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-bold text-slate-900">{userName ?? 'NUPal User'}</div>
-                      <div className="truncate text-[10px] font-medium text-slate-400 uppercase tracking-wider">My Account</div>
+                      <div className="truncate text-xs text-slate-500">My Account</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
+                  {/* Action Buttons - Side by Side */}
+                  <div className="grid grid-cols-2 gap-2">
                     <Button
                       href="/dashboard"
-                      variant="primary"
-                      className="flex-1 py-4 rounded-xl text-sm font-bold justify-center shadow-md bg-blue-400 hover:bg-blue-500 transition-all active:scale-95 shadow-blue-500/25"
-                      onClick={() => setMobileMenuOpen(false)} // Close mobile menu when navigating to profile
+                      variant="none"
+                      className="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-white border border-slate-200 px-4 py-3 text-center transition-all duration-200 hover:bg-slate-50 hover:border-blue-300 active:scale-95 shadow-sm"
+                      onClick={() => setMobileMenuOpen(false)}
                     >
-                      Profile <ChevronRight size={16} className="ml-1" />
+                      <User size={20} className="text-blue-500" />
+                      <span className="text-xs font-semibold text-slate-700">Profile</span>
                     </Button>
+
                     <Button
                       variant="none"
-                      className="flex-1 py-4 rounded-xl text-sm font-bold justify-center text-red-600 bg-red-50 hover:bg-red-100 transition-all border border-red-100 active:scale-95"
+                      className="flex flex-col items-center justify-center gap-1.5 rounded-xl bg-white border border-slate-200 px-4 py-3 text-center transition-all duration-200 hover:bg-red-50 hover:border-red-300 active:scale-95 shadow-sm"
                       onClick={() => {
                         removeToken();
                         window.location.href = '/';
                       }}
                     >
-                      Logout
+                      <LogOut size={20} className="text-red-500" />
+                      <span className="text-xs font-semibold text-slate-700">Logout</span>
                     </Button>
                   </div>
                 </div>
