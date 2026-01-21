@@ -88,7 +88,7 @@ export default function AboutIntroSection() {
             <span className="text-sm font-bold uppercase tracking-[0.2em] text-blue-500">About Us</span>
             <div className="mt-2 h-1 w-12 bg-blue-500 mx-auto rounded-full" />
           </div>
-          <h2 className="text-3xl font-black text-slate-900 leading-[1.15] tracking-tight">
+          <h2 className="text-2xl font-black text-slate-900 leading-[1.15] tracking-tight">
             NUPal empowers everyone to build their academic success
           </h2>
         </div>
@@ -115,10 +115,10 @@ export default function AboutIntroSection() {
           {/* Text Second */}
           <div className="space-y-10">
             <div className="space-y-6 text-center">
-              <p className="text-lg sm:text-xl leading-relaxed text-slate-700 font-medium">
+              <p className="text-base sm:text-lg leading-relaxed text-slate-700 font-medium">
                 NUPal is a cutting-edge academic advising platform that leverages artificial intelligence to transform how students navigate their educational journey.
               </p>
-              <p className="text-base sm:text-lg leading-relaxed text-slate-500">
+              <p className="text-sm sm:text-base leading-relaxed text-slate-500">
                 We empower students to make confident, informed decisions about their academic path. Through intelligent course recommendations, comprehensive progress tracking, and intuitive semester planning tools, NUPal eliminates the complexity and uncertainty from academic planning.
               </p>
             </div>
