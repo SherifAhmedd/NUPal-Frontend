@@ -3,14 +3,14 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 
-interface ButtonProps {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: ReactNode;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'none';
   size?: 'sm' | 'md' | 'lg' | 'none';
   className?: string;
   onClick?: (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void;
   href?: string;
-  type?: 'button' | 'submit';
+  type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
   ariaLabel?: string;
   role?: string;
@@ -29,7 +29,9 @@ export default function Button({
   ariaLabel,
   role,
   id,
-}: ButtonProps) {
+  // ...rest props to allow data attributes and other standard attributes
+  ...rest
+}: ButtonProps & React.ButtonHTMLAttributes<HTMLButtonElement> & React.AnchorHTMLAttributes<HTMLAnchorElement>) {
   const baseStyles = 'inline-flex items-center font-semibold transition-all duration-300 active:scale-95 disabled:opacity-50 disabled:pointer-events-none transition-all';
 
   const variants = {
@@ -58,6 +60,7 @@ export default function Button({
         aria-label={ariaLabel}
         role={role}
         id={id}
+        {...rest as any}
       >
         {children}
       </Link>
@@ -73,6 +76,7 @@ export default function Button({
       aria-label={ariaLabel}
       role={role}
       id={id}
+      {...rest as any}
     >
       {children}
     </button>

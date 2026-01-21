@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { services } from '@/data/services';
@@ -9,6 +9,32 @@ import Button from '../ui/Button';
 export default function ServicesSection() {
     const [activeService, setActiveService] = useState(services[0].id);
     const [openService, setOpenService] = useState<string | null>(services[0].id);
+    // Ref for the mobile tabs container
+    const tabsContainerRef = useRef<HTMLDivElement>(null);
+
+    // Scroll active tab into view when activeService changes
+    useEffect(() => {
+        if (tabsContainerRef.current) {
+            const container = tabsContainerRef.current;
+            const activeTab = container.querySelector(`[data-service-id="${activeService}"]`) as HTMLElement;
+
+            if (activeTab) {
+                const containerRect = container.getBoundingClientRect();
+                const tabRect = activeTab.getBoundingClientRect();
+
+                // Calculate the position to center the tab
+                // We want the center of the tab to align with the center of the container
+                // Current scrollLeft + (distance from left of container to left of tab) - (half container width) + (half tab width)
+                const offset = tabRect.left - containerRect.left;
+                const scrollLeft = container.scrollLeft + offset - (container.clientWidth / 2) + (tabRect.width / 2);
+
+                container.scrollTo({
+                    left: scrollLeft,
+                    behavior: 'smooth'
+                });
+            }
+        }
+    }, [activeService]);
 
     const handleServiceChange = (serviceId: string) => {
         setActiveService(serviceId);
@@ -18,6 +44,46 @@ export default function ServicesSection() {
     const handleServiceToggle = (serviceId: string) => {
         setOpenService(openService === serviceId ? null : serviceId);
         setActiveService(serviceId);
+    };
+
+
+    // Touch handling for mobile swipe
+    const [touchStart, setTouchStart] = useState<number | null>(null);
+    const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+    // Minimum swipe distance (in px)
+    const minSwipeDistance = 50;
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null); // Reset touch end
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+
+        if (isLeftSwipe || isRightSwipe) {
+            const currentIndex = services.findIndex(s => s.id === activeService);
+            let nextIndex;
+
+            if (isLeftSwipe) {
+                // Next service
+                nextIndex = (currentIndex + 1) % services.length;
+            } else {
+                // Previous service
+                nextIndex = (currentIndex - 1 + services.length) % services.length;
+            }
+
+            handleServiceChange(services[nextIndex].id);
+        }
     };
 
     return (
@@ -71,7 +137,12 @@ export default function ServicesSection() {
                                         <div className={`overflow-hidden transition-all duration-500 ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                             <div className="pb-6 pl-5">
                                                 <p className="mb-4 text-base leading-relaxed text-slate-600">{service.description}</p>
-                                                <Link href={service.path} className="text-sm font-semibold text-indigo-600 underline hover:text-blue-500">Take a guided tour</Link>
+                                                <Link href={service.path} className="group inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 transition-all">
+                                                    <span>Take a guided tour</span>
+                                                    <svg className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                                    </svg>
+                                                </Link>
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +177,7 @@ export default function ServicesSection() {
                                                     zIndex: zIndex,
                                                 }}
                                             >
-                                                <div className={`h-full w-full bg-white border border-slate-200 flex flex-col rounded-xl overflow-hidden transition-all duration-300 ${isActive ? 'shadow-[0_25px_50px_-45px_rgba(0,0,0,0.25)]' : ''}`}>
+                                                <div className={`h-full w-full border border-slate-200 flex flex-col rounded-xl overflow-hidden transition-all duration-300 ${isActive ? 'shadow-[0_25px_50px_-45px_rgba(0,0,0,0.25)]' : ''}`} style={{ backgroundColor: service.id === 'career-hub' ? '#F5F3EF' : 'white' }}>
                                                     {/* Browser Header */}
                                                     <div className="flex items-center gap-4 px-5 py-2 border-b border-slate-100 bg-slate-50/50">
                                                         <div className="flex gap-1.5">
@@ -148,7 +219,12 @@ export default function ServicesSection() {
             {/* MOBILE VIEW - lg:hidden only */}
             < div className="lg:hidden flex flex-col pt-8" >
                 {/* 1. Image Mockup on Top */}
-                < div className="relative aspect-[4/3] w-full overflow-hidden mb-8" >
+                < div
+                    className="relative aspect-[4/3] w-full overflow-hidden mb-8 touch-pan-y"
+                    onTouchStart={onTouchStart}
+                    onTouchMove={onTouchMove}
+                    onTouchEnd={onTouchEnd}
+                >
                     <div className="relative h-full w-full">
                         {services.map((service, serviceIndex) => {
                             const isActive = activeService === service.id;
@@ -162,13 +238,13 @@ export default function ServicesSection() {
                             return (
                                 <div
                                     key={service.id}
-                                    className={`absolute inset-0 ${service.id === 'chatbot' || service.id === 'academic-plan' ? 'p-2' : 'p-6'} transition-all duration-500 ease-in-out ${opacity}`}
+                                    className={`absolute inset-0 p-6 transition-all duration-500 ease-in-out ${opacity}`}
                                     style={{
                                         transform: `translateX(${translateX})`,
                                         zIndex: zIndex,
                                     }}
                                 >
-                                    <div className="h-full w-full bg-white border border-slate-200 flex flex-col rounded-xl overflow-hidden shadow-lg">
+                                    <div className="h-full w-full border border-slate-200 flex flex-col rounded-xl overflow-hidden shadow-lg" style={{ backgroundColor: service.id === 'career-hub' ? '#f7f8facb' : 'white' }}>
                                         {/* Browser Header */}
                                         <div className="flex items-center gap-3 px-3 py-1.5 border-b border-slate-100 bg-slate-50/50">
                                             <div className="flex gap-1.5">
@@ -201,7 +277,7 @@ export default function ServicesSection() {
                 </div >
 
                 {/* 2. Horizontal Tab Navigation (Pill-style like desktop) */}
-                < div className="px-6 mb-8 overflow-x-auto no-scrollbar" >
+                < div className="px-6 mb-8 overflow-x-auto no-scrollbar" ref={tabsContainerRef} >
                     <div className="flex gap-2 min-w-max pb-2">
                         {services.map((service) => {
                             const isActive = activeService === service.id;
@@ -210,8 +286,9 @@ export default function ServicesSection() {
                                     key={service.id}
                                     variant="none"
                                     size="none"
+                                    data-service-id={service.id}
                                     onClick={() => handleServiceChange(service.id)}
-                                    className={`rounded-full px-5 py-2.5 text-[11px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap border ${isActive
+                                    className={`rounded-full px-5 py-2.5 text-[10px] font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap border ${isActive
                                         ? 'bg-blue-500 text-white border-blue-500 shadow-lg shadow-blue-500/30 active:scale-95'
                                         : 'bg-blue-50/50 text-blue-500 border-blue-100/30'
                                         }`}
@@ -225,18 +302,18 @@ export default function ServicesSection() {
 
                 {/* 3. Single Content Card (Focused like desktop) */}
                 < div className="px-6 mb-12" >
-                    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] border border-slate-50 relative overflow-hidden min-h-[220px] flex flex-col items-center justify-center text-center">
+                    <div className="rounded-[2rem] bg-white p-8 shadow-[0_20px_50px_-15px_rgba(0,0,0,0.08)] border border-slate-50 relative overflow-hidden h-[240px] flex flex-col items-center justify-center text-center">
                         {services.map((service) => {
                             const isActive = activeService === service.id;
                             if (!isActive) return null;
                             return (
                                 <div key={service.id} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                    <p className="text-slate-600 mb-8 leading-relaxed text-base font-medium">
+                                    <p className="text-slate-600 mb-8 leading-relaxed text-sm font-medium">
                                         {service.description}
                                     </p>
                                     <Link
                                         href={service.path}
-                                        className="inline-block text-blue-500 font-bold border-b-2 border-blue-100 hover:border-blue-500 transition-all pb-1 mb-2 text-sm tracking-wide"
+                                        className="inline-block text-blue-500 font-bold border-b-2 border-blue-100 hover:border-blue-500 transition-all pb-1 mb-2 text-xs tracking-wide"
                                     >
                                         Take a guided tour
                                     </Link>
