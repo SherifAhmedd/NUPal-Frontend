@@ -112,3 +112,24 @@ export async function deleteResume(id: string): Promise<void> {
 
   if (!response.ok) throw new Error('Failed to delete');
 }
+
+export async function analyzeJobFit(jobUrl: string, resumeId?: string): Promise<any> {
+  const token = getToken();
+  if (!token) throw new Error('Not authenticated');
+
+  const response = await fetch(`${API_ENDPOINTS.RESUME}/job-fit/analyze`, {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}` 
+    },
+    body: JSON.stringify({ jobUrl, resumeId }),
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error((err as any).error || 'Failed to analyze job fit');
+  }
+
+  return response.json();
+}
