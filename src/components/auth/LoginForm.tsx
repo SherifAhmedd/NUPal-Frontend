@@ -32,17 +32,28 @@ export default function LoginForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-      const data = await res.json();
+      let data: any = {};
+      const textData = await res.text();
+      if (textData) {
+        try {
+          data = JSON.parse(textData);
+        } catch (_) {
+          throw new Error(`Invalid JSON response (Status: ${res.status}). Body: ${textData.substring(0, 100)}`);
+        }
+      }
+
       if (!res.ok) {
-        setErr(data.error || 'Login failed');
+        setErr(data?.error || `Login failed with status ${res.status}`);
       } else {
-        if (data.token) {
+        if (data?.token) {
           // Dynamically import to avoid SSR issues with localStorage if needed, 
           // but here we are in a 'use client' component so it is fine.
           const { setToken } = await import('@/lib/auth');
           setToken(data.token);
           // Force a hard navigation or router push
           window.location.href = '/dashboard';
+        } else {
+          setErr('Login succeeded but no token returned.');
         }
       }
     } catch (e: unknown) {
