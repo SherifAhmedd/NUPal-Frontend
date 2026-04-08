@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { getToken } from '@/lib/auth';
@@ -19,7 +19,7 @@ import Skeleton from '@/components/ui/Skeleton';
 import { Dispatch, SetStateAction } from 'react';
 import ResumeAnalyzerPage from './resume-analyzer/page';
 
-export default function CareerHubPage() {
+function CareerHubPageInner() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const activeTab = searchParams.get('tab');
@@ -124,14 +124,11 @@ export default function CareerHubPage() {
     }, []);
 
     const loadStudentProfile = async () => {
-        console.log('Attempting to load student profile...');
         const profile = await fetchDynamicSkillsProfile();
 
         if (profile) {
-            console.log('Student profile loaded:', profile);
             setStudentProfile(profile);
         } else {
-            console.log('No profile loaded, using demo skills');
             // Fallback demo skills for when not logged in
             setStudentProfile({
                 name: 'Student',
@@ -147,7 +144,6 @@ export default function CareerHubPage() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        // Only pass location if it's not the default "Cairo" or if user explicitly selected it
         loadJobs(jobType || undefined, location || undefined);
     };
 
@@ -155,14 +151,12 @@ export default function CareerHubPage() {
     useEffect(() => {
         let filtered = jobs;
 
-        // Filter by location (exact match with selected location)
         if (location) {
             filtered = filtered.filter(job =>
                 job.location.toLowerCase() === location.toLowerCase()
             );
         }
 
-        // Filter by employment type
         if (filters.employmentTypes.length > 0) {
             filtered = filtered.filter(job => {
                 if (!job.contractTime) return false;
@@ -174,23 +168,18 @@ export default function CareerHubPage() {
             });
         }
 
-        // Filter by work type
         if (filters.workTypes.length > 0) {
             filtered = filtered.filter(job =>
                 job.workType && filters.workTypes.includes(job.workType.toLowerCase())
             );
         }
 
-        // Filter by companies
         if (filters.companies.length > 0) {
             filtered = filtered.filter(job =>
                 job.companyName && filters.companies.includes(job.companyName)
             );
         }
 
-
-
-        // Filter by category (based on job title/description)
         if (filters.categories.length > 0) {
             filtered = filtered.filter(job =>
                 filters.categories.some(category =>
@@ -202,7 +191,7 @@ export default function CareerHubPage() {
         }
 
         setFilteredJobs(filtered);
-        setCurrentPage(1); // Reset to first page when filters change
+        setCurrentPage(1); 
     }, [jobs, filters, location]);
 
     const handleFilterChange = (newFilters: SetStateAction<FilterState>) => {
@@ -217,7 +206,6 @@ export default function CareerHubPage() {
 
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        // Scroll to jobs section instead of top of page
         const jobsSection = document.getElementById('jobs-section');
         if (jobsSection) {
             jobsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -227,7 +215,6 @@ export default function CareerHubPage() {
     const handleViewJobs = () => {
         setJobType(selectedCareer.title);
         loadJobs(selectedCareer.title, location);
-        // Scroll to jobs section
         const jobsSection = document.getElementById('jobs-section');
         if (jobsSection) {
             jobsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -247,7 +234,7 @@ export default function CareerHubPage() {
                 </div>
 
                 <div className="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8">
-                    {/* Mobile Header (New Design) */}
+                    {/* Mobile Header */}
                     <div className="md:hidden text-center mb-10">
                         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-600 text-xs font-semibold uppercase tracking-wide mb-3">
                             <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></span>
@@ -261,7 +248,7 @@ export default function CareerHubPage() {
                         </p>
                     </div>
 
-                    {/* Desktop Header (Original Design) */}
+                    {/* Desktop Header */}
                     <div className="hidden md:block text-left mb-8">
                         <h1 className="text-2xl font-bold text-slate-700 sm:text-2xl">
                             Real student results
@@ -294,31 +281,18 @@ export default function CareerHubPage() {
                             ))}
                         </div>
                     </div>
-
-
                 </div>
             </div>
 
             {/* Bottom Section: Header and Search */}
             <div className="relative pb-16 pt-6">
                 <div className="relative mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8 z-10">
-                    {/* Heading for Job Search */}
                     <h2 className="text-4xl font-extrabold text-slate-900 mb-6 tracking-tight">
                         Find your{' '}
                         <span className="relative inline-block text-blue-500">
                             dream jobs
-                            {/* Decorative underline */}
-                            <svg
-                                className="absolute -bottom-2 left-0 w-full h-3 text-blue-400 opacity-80"
-                                viewBox="0 0 100 10"
-                                preserveAspectRatio="none"
-                            >
-                                <path
-                                    d="M0 5 Q 50 10 100 5"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                    fill="none"
-                                />
+                            <svg className="absolute -bottom-2 left-0 w-full h-3 text-blue-400 opacity-80" viewBox="0 0 100 10" preserveAspectRatio="none">
+                                <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="4" fill="none" />
                             </svg>
                         </span>
                     </h2>
@@ -326,10 +300,8 @@ export default function CareerHubPage() {
                         Find real opportunities at top companies
                     </p>
 
-                    {/* Search Form */}
                     <form onSubmit={handleSearch} className="mt-10 w-full max-w-full px-1">
                         <div className="mx-auto flex flex-col md:flex-row max-w-3xl items-center gap-3 rounded-lg bg-white p-2 shadow-lg w-full overflow-hidden">
-                            {/* Job Type Input */}
                             <div className="relative w-full md:flex-1 min-w-0">
                                 <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                                 <input
@@ -340,63 +312,28 @@ export default function CareerHubPage() {
                                     className="w-full rounded-md border-0 bg-transparent py-3 pl-12 pr-4 text-slate-900 placeholder-slate-400 focus:outline-none"
                                 />
                             </div>
-
-                            {/* Divider */}
                             <div className="hidden md:block h-8 w-px bg-slate-200"></div>
-
-                            {/* Location Dropdown */}
                             <div className="relative w-full md:flex-1 min-w-0">
                                 <MapPin className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-slate-400" />
                                 <select
                                     value={location}
                                     onChange={(e) => setLocation(e.target.value)}
                                     className="w-full appearance-none rounded-md border-0 bg-transparent py-3 pl-12 pr-10 text-slate-900 focus:outline-none truncate relative z-10"
-                                    style={{ maxWidth: '100%' }}
                                 >
                                     <option value="">All Locations</option>
                                     <option value="Cairo">Cairo</option>
                                     <option value="Alexandria">Alexandria</option>
                                     <option value="Giza">Giza</option>
                                 </select>
-                                {/* Dropdown arrow */}
                                 <svg className="pointer-events-none absolute right-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 z-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
-
-                            {/* Search Button */}
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="md"
-                                disabled={loading}
-                                className="w-full md:w-auto px-8 shadow-md"
-                            >
+                            <Button type="submit" variant="primary" size="md" disabled={loading} className="w-full md:w-auto px-8 shadow-md">
                                 Search
                             </Button>
                         </div>
                     </form>
-
-                    {/* Popular Searches - Desktop (Original Style) */}
-                    <div className="mt-6 hidden md:flex flex-wrap items-center justify-center gap-2 text-sm px-4">
-                        <span className="font-medium text-slate-500 mr-1">Popular:</span>
-                        {[
-                            'Software Engineer',
-                            'AI Engineer',
-                            'Cloud Engineer',
-                            'Data Engineer'
-                        ].map((term) => (
-                            <Button
-                                key={term}
-                                variant="none"
-                                size="none"
-                                onClick={() => { setJobType(term); loadJobs(term, location); }}
-                                className="px-3 py-1 text-slate-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
-                            >
-                                {term}
-                            </Button>
-                        ))}
-                    </div>
                 </div>
             </div>
 
@@ -404,79 +341,37 @@ export default function CareerHubPage() {
             <div id="jobs-section" className="bg-slate-50 py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div className="flex gap-8">
-                        {/* Left Sidebar - Filters (Desktop) */}
                         <div className="hidden md:block w-64 flex-shrink-0">
-                            <FilterSidebar
-                                onFilterChange={handleFilterChange}
-                                topCompanies={topCompanies}
-                                selectedFilters={filters}
-                            />
+                            <FilterSidebar onFilterChange={handleFilterChange} topCompanies={topCompanies} selectedFilters={filters} />
                         </div>
-
-                        {/* Right Side - Job Results */}
                         <div className="flex-1 min-w-0">
-                            {/* Results Header */}
                             <div className="mb-6 flex items-center justify-between gap-4">
                                 <div>
                                     <h2 className="text-xl md:text-2xl font-bold text-slate-900">All Jobs</h2>
-                                    <p className="mt-0.5 text-[10px] md:text-sm text-slate-600">
-                                        Showing {filteredJobs.length} result{filteredJobs.length !== 1 ? 's' : ''}
-                                    </p>
+                                    <p className="mt-0.5 text-[10px] md:text-sm text-slate-600">Showing {filteredJobs.length} result{filteredJobs.length !== 1 ? 's' : ''}</p>
                                 </div>
-
-                                {/* Mobile Filter Toggle */}
-                                <Button
-                                    onClick={() => setIsFilterOpen(true)}
-                                    variant="none"
-                                    className="md:hidden flex items-center gap-1.5 px-4 py-2 bg-blue-50/80 text-blue-600 rounded-full font-semibold text-xs shadow-sm hover:bg-blue-100 transition-all border border-blue-100/50"
-                                >
+                                <Button onClick={() => setIsFilterOpen(true)} variant="none" className="md:hidden flex items-center gap-1.5 px-4 py-2 bg-blue-50/80 text-blue-600 rounded-full font-semibold text-xs shadow-sm hover:bg-blue-100 transition-all border border-blue-100/50">
                                     <SlidersHorizontal className="h-3.5 w-3.5" />
                                     <span>Filters</span>
                                 </Button>
                             </div>
 
-                            {/* Mobile Filters Bottom Sheet */}
                             {isFilterOpen && (
                                 <div className="fixed inset-0 z-[100] md:hidden">
-                                    {/* Overlay Background */}
-                                    <div
-                                        className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]"
-                                        onClick={() => setIsFilterOpen(false)}
-                                    />
-
-                                    {/* Bottom Sheet Content */}
+                                    <div className="absolute inset-0 bg-slate-900/40 backdrop-blur-[2px]" onClick={() => setIsFilterOpen(false)} />
                                     <div className="absolute left-0 right-0 bottom-0 bg-white rounded-t-[2.5rem] shadow-2xl flex flex-col animate-in slide-in-from-bottom duration-500 max-h-[50vh]">
-                                        {/* Handle for dragging feel */}
                                         <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mt-4 mb-2" />
-
                                         <div className="flex items-center justify-between px-8 py-3 border-b border-slate-50">
                                             <h3 className="text-xl font-bold text-slate-900">Filters</h3>
-                                            <Button
-                                                variant="none"
-                                                size="none"
-                                                onClick={() => setIsFilterOpen(false)}
-                                                className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-                                            >
+                                            <Button variant="none" size="none" onClick={() => setIsFilterOpen(false)} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
                                                 <X className="h-6 w-6 text-slate-500" />
                                             </Button>
                                         </div>
-
                                         <div className="flex-1 overflow-y-auto px-8 py-4">
-                                            <FilterSidebar
-                                                onFilterChange={setTempFilters}
-                                                topCompanies={topCompanies}
-                                                selectedFilters={tempFilters}
-                                            />
+                                            <FilterSidebar onFilterChange={setTempFilters} topCompanies={topCompanies} selectedFilters={tempFilters} />
                                         </div>
-
                                         <div className="p-4 pb-8 px-8 border-t border-slate-50 bg-white">
-                                            <Button
-                                                className="w-full py-3.5 text-base font-bold shadow-lg shadow-blue-100 rounded-2xl"
-                                                onClick={() => {
-                                                    setFilters(tempFilters);
-                                                    setIsFilterOpen(false);
-                                                }}
-                                            >
+                                            <Button className="w-full py-3.5 text-base font-bold shadow-lg shadow-blue-100 rounded-2xl" onClick={() => { setFilters(tempFilters); setIsFilterOpen(false); }}>
                                                 Show Results
                                             </Button>
                                         </div>
@@ -484,14 +379,12 @@ export default function CareerHubPage() {
                                 </div>
                             )}
 
-                            {/* Error Message */}
                             {error && (
                                 <div className="mb-6 rounded-lg border border-red-200 bg-red-50 p-4 text-red-800">
                                     <p className="text-sm font-medium">{error}</p>
                                 </div>
                             )}
 
-                            {/* Loading State */}
                             {loading && (
                                 <div className="space-y-4">
                                     {[1, 2, 3].map((i) => (
@@ -504,45 +397,28 @@ export default function CareerHubPage() {
                                                 </div>
                                             </div>
                                             <Skeleton className="h-20 w-full" />
-                                            <div className="flex gap-2">
-                                                <Skeleton className="h-8 w-20 rounded-full" />
-                                                <Skeleton className="h-8 w-20 rounded-full" />
-                                            </div>
+                                            <div className="flex gap-2"><Skeleton className="h-8 w-20 rounded-full" /><Skeleton className="h-8 w-20 rounded-full" /></div>
                                         </div>
                                     ))}
                                 </div>
                             )}
 
-                            {/* Job Cards */}
                             {!loading && currentJobs.length > 0 && (
                                 <>
                                     <div className="space-y-4">
-                                        {currentJobs.map((job) => (
-                                            <JobCard key={job.id} job={job} />
-                                        ))}
+                                        {currentJobs.map((job) => <JobCard key={job.id} job={job} />)}
                                     </div>
-
-                                    {/* Pagination */}
-                                    {totalPages > 1 && (
-                                        <Pagination
-                                            currentPage={currentPage}
-                                            totalPages={totalPages}
-                                            onPageChange={handlePageChange}
-                                        />
-                                    )}
+                                    {totalPages > 1 && <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />}
                                 </>
                             )}
 
-                            {/* Empty State */}
                             {!loading && filteredJobs.length === 0 && !error && (
                                 <div className="rounded-lg border-2 border-dashed border-slate-300 bg-white p-12 text-center">
                                     <div className="mx-auto h-12 w-12 rounded-full bg-slate-100 flex items-center justify-center">
                                         <Search className="h-6 w-6 text-slate-400" />
                                     </div>
                                     <h3 className="mt-4 text-lg font-semibold text-slate-900">No jobs found</h3>
-                                    <p className="mt-2 text-sm text-slate-600">
-                                        Try adjusting your search criteria or filters.
-                                    </p>
+                                    <p className="mt-2 text-sm text-slate-600">Try adjusting your search criteria or filters.</p>
                                 </div>
                             )}
                         </div>
@@ -550,5 +426,17 @@ export default function CareerHubPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function CareerHubPage() {
+    return (
+        <Suspense fallback={
+            <div className="flex min-h-screen items-center justify-center bg-slate-50">
+                <p className="text-slate-500 font-medium">Loading Career Hub...</p>
+            </div>
+        }>
+            <CareerHubPageInner />
+        </Suspense>
     );
 }
