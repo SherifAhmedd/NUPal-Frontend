@@ -37,6 +37,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { Suspense } from "react";
+
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -45,7 +47,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#2F80ED" />
       </head>
       <body className={`${poppins.className} flex min-h-screen flex-col`} suppressHydrationWarning>
-        <Navbar />
+        <Suspense fallback={<div className="h-16" />}>
+          <Navbar />
+        </Suspense>
         <main className="flex-1">{children}</main>
         <Footer />
       </body>
