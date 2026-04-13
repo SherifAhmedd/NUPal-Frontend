@@ -214,11 +214,13 @@ export function Navbar() {
                                 <Link 
                                     key={child.path} 
                                     href={child.path} 
-                                    className={`flex flex-col gap-0.5 p-3.5 rounded-xl transition-all duration-200 ${
-                                      isChildActive ? "bg-blue-50 text-blue-600" : "hover:bg-slate-50 text-slate-600"
+                                    className={`flex flex-col gap-0.5 p-3.5 rounded-xl transition-all duration-200 group/child ${
+                                      isChildActive ? "bg-blue-50" : "hover:bg-slate-50"
                                     }`}
                                 >
-                                    <span className={`text-[14.5px] font-bold leading-none ${isChildActive ? "text-blue-600" : "text-slate-900"}`}>
+                                    <span className={`text-sm font-semibold leading-none transition-colors duration-200 ${
+                                      isChildActive ? "text-blue-500" : "text-slate-600 group-hover/child:text-blue-500"
+                                    }`}>
                                       {child.name}
                                     </span>
                                     <span className="text-[11px] font-medium text-slate-400 leading-tight">
@@ -386,9 +388,9 @@ export function Navbar() {
                                             key={child.path}
                                             href={child.path}
                                             onClick={() => setMobileMenuOpen(false)}
-                                            className={`flex flex-col gap-1 px-10 py-3.5 transition-colors ${isChildActive ? "text-blue-600" : "text-slate-600"}`}
+                                            className={`flex flex-col gap-1 px-10 py-3.5 transition-colors ${isChildActive ? "text-blue-500" : "text-slate-600"}`}
                                         >
-                                            <span className="font-bold text-[15px]">{child.name}</span>
+                                            <span className="font-semibold text-sm">{child.name}</span>
                                             <span className="text-[10px] font-medium text-slate-400">{child.description}</span>
                                         </Link>
                                     );
