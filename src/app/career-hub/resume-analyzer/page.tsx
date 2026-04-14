@@ -89,6 +89,7 @@ function ResumeAnalyzerPageInner() {
     isReady: false
   });
   const [pendingParsed, setPendingParsed] = useState<ParsedResume | null>(null);
+  const [pendingParsedId, setPendingParsedId] = useState<string | null>(null);
   const [pendingJobFit, setPendingJobFit] = useState<JobFitState | null>(null);
 
   // Job Fit State
@@ -101,6 +102,12 @@ function ResumeAnalyzerPageInner() {
   const [isJobFitDetailsLoading, setIsJobFitDetailsLoading] = useState(false);
   const [isSilentJobFitLoad, setIsSilentJobFitLoad] = useState(false);
   const [loadedJobFitId, setLoadedJobFitId] = useState<string | null>(null);
+
+  const navigatingToResumeRef = useRef<string | null>(null);
+  const navigatingToJobFitRef = useRef<string | null>(null);
+
+  const currentResumeId = searchParams.get('resumeId') || navigatingToResumeRef.current;
+  const currentJobFitId = searchParams.get('jobFitId') || navigatingToJobFitRef.current;
 
   const loadResumeDetailsById = useCallback(
     async (id: string, fileNameHint?: string, shouldScroll = true) => {
@@ -195,11 +202,15 @@ function ResumeAnalyzerPageInner() {
   useEffect(() => {
     const resumeId = searchParams.get('resumeId');
     if (resumeId) {
+      if (resumeId === navigatingToResumeRef.current) navigatingToResumeRef.current = null;
       setActiveTab('resume-checking');
       void loadResumeDetailsById(resumeId);
     } else {
-      setParsed(null);
-      setLoadedResumeId(null);
+      if (!navigatingToResumeRef.current) {
+        setParsed(null);
+        setLoadedResumeId(null);
+        setIsResumeDetailsLoading(false);
+      }
     }
   }, [searchParams, loadResumeDetailsById]);
 
@@ -208,14 +219,16 @@ function ResumeAnalyzerPageInner() {
     const tabFromUrl = searchParams.get('tab');
 
     if (jobFitId) {
+      if (jobFitId === navigatingToJobFitRef.current) navigatingToJobFitRef.current = null;
       if (tabFromUrl !== 'interview-prep') {
         setActiveTab('job-fit');
       }
       void loadJobFitDetailsById(jobFitId);
     } else {
-      if (activeTab !== 'interview-prep') {
+      if (activeTab !== 'interview-prep' && !navigatingToJobFitRef.current) {
         setJobFitData(null);
         setLoadedJobFitId(null);
+        setIsJobFitDetailsLoading(false);
       }
     }
   }, [searchParams, activeTab, loadJobFitDetailsById]);
@@ -243,6 +256,7 @@ function ResumeAnalyzerPageInner() {
 
   const selectTab = useCallback(
     (tab: NavTabId) => {
+      window.scrollTo(0, 0);
       setError(null);
       setActiveTab(tab);
       updateAnalyzerUrl({
@@ -254,8 +268,8 @@ function ResumeAnalyzerPageInner() {
     [updateAnalyzerUrl]
   );
 
-  const isViewingSpecificResume = activeTab === 'resume-checking' && (!!searchParams.get('resumeId') || isResumeDetailsLoading);
-  const isViewingSpecificJobFit = activeTab === 'job-fit' && (!!searchParams.get('jobFitId') || (isJobFitDetailsLoading && !isSilentJobFitLoad));
+  const isViewingSpecificResume = activeTab === 'resume-checking' && (!!currentResumeId || isResumeDetailsLoading);
+  const isViewingSpecificJobFit = activeTab === 'job-fit' && (!!currentJobFitId || (isJobFitDetailsLoading && !isSilentJobFitLoad));
   const hideChrome = isViewingSpecificResume || isViewingSpecificJobFit;
 
   const handleFile = async (file: File) => {
@@ -263,11 +277,13 @@ function ResumeAnalyzerPageInner() {
     setError(null);
     setParsed(null);
     setPendingParsed(null);
+    setPendingParsedId(null);
     setFileName(file.name);
 
     try {
       const result = await parseResume(file);
       setPendingParsed(result.data);
+      setPendingParsedId(result.id);
       setOverlay(prev => ({ ...prev, isReady: true }));
       loadHistory();
     } catch (err: any) {
@@ -345,8 +361,19 @@ function ResumeAnalyzerPageInner() {
     window.scrollTo(0, 0);
     if (overlay.type === 'cv' && pendingParsed) {
       setParsed(pendingParsed);
+      if (pendingParsedId) {
+        navigatingToResumeRef.current = pendingParsedId;
+        setLoadedResumeId(pendingParsedId);
+        setSelectedResumeId(pendingParsedId);
+        updateAnalyzerUrl({ tab: 'resume-checking', resumeId: pendingParsedId, jobFitId: null });
+      }
     } else if (overlay.type === 'jobfit' && pendingJobFit) {
       setJobFitData(pendingJobFit);
+      if (pendingJobFit.id) {
+        navigatingToJobFitRef.current = pendingJobFit.id;
+        setLoadedJobFitId(pendingJobFit.id);
+        updateAnalyzerUrl({ tab: 'job-fit', jobFitId: pendingJobFit.id, resumeId: null });
+      }
     }
     setOverlay(prev => ({ ...prev, isOpen: false, isReady: false }));
   };
@@ -407,139 +434,151 @@ function ResumeAnalyzerPageInner() {
           </div>
         )}
 
-        <div className="flex-1 w-full flex flex-col items-center">
-          {error && (
-            <div className="mb-8 flex items-start gap-3 bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-700 w-full max-w-4xl animate-in slide-in-from-top-2">
-              <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
-              <div>
-                <p className="font-bold">Action failed</p>
-                <p className="mt-0.5 font-medium text-red-600/90">{error}</p>
-              </div>
-            </div>
-          )}
+        <div className="flex-1 w-full flex flex-col items-center min-h-[600px]">
+          <AnimatePresence mode="wait">
+            {error && (
+              <motion.div
+                key="error-alert"
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="mb-8 flex items-start gap-3 bg-red-50 border border-red-200 rounded-2xl p-4 text-sm text-red-700 w-full max-w-4xl"
+              >
+                <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
+                <div>
+                  <p className="font-bold">Action failed</p>
+                  <p className="mt-0.5 font-medium text-red-600/90">{error}</p>
+                </div>
+              </motion.div>
+            )}
 
-          {activeTab === 'resume-checking' && (
-            <motion.div
-              key="resume-checking"
-              initial={{ y: 12 }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="w-full flex flex-col items-center gap-8"
-            >
-              {!searchParams.get('resumeId') && !isResumeDetailsLoading && (
-                <CVScoringTab
-                  history={history}
-                  isHistoryLoading={isHistoryLoading}
-                  onUpload={handleFile}
-                  onSelectExisting={handleLoadFromHistory}
-                  isUploading={overlay.isOpen}
-                  onDeleteHistory={handleDeleteHistory}
-                />
-              )}
-
-              {isResumeDetailsLoading ? (
-                <DetailsSkeleton kind="resume" />
-              ) : (
-                parsed && searchParams.get('resumeId') && (
-                  <ResumeDisplay
-                    data={parsed}
-                    fileName={fileName}
-                    onReset={handleResetCV}
+            {activeTab === 'resume-checking' && (
+              <motion.div
+                key="resume-checking"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="w-full flex flex-col items-center gap-8"
+              >
+                {!currentResumeId && !isResumeDetailsLoading && (
+                  <CVScoringTab
+                    history={history}
+                    isHistoryLoading={isHistoryLoading}
+                    onUpload={handleFile}
+                    onSelectExisting={handleLoadFromHistory}
+                    isUploading={overlay.isOpen}
+                    onDeleteHistory={handleDeleteHistory}
                   />
-                )
-              )}
-            </motion.div>
-          )}
+                )}
 
-          {activeTab === 'job-fit' && (
-            <motion.div
-              key="job-fit"
-              initial={{ y: 12 }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="w-full flex flex-col items-center gap-8"
-            >
-              {!searchParams.get('jobFitId') && (!isJobFitDetailsLoading || isSilentJobFitLoad) && (
-                <JobFitTab
-                  jobUrl={jobUrl}
-                  setJobUrl={setJobUrl}
-                  jobDescription={jobDescription}
-                  setJobDescription={setJobDescription}
-                  activeTab={jobFitActiveTab}
-                  setActiveTab={setJobFitActiveTab}
-                  history={history}
-                  selectedResumeId={selectedResumeId}
-                  setSelectedResumeId={setSelectedResumeId}
-                  onAnalyze={handleJobFit}
-                  isAnalyzing={overlay.isOpen}
-                  canAnalyze={(jobFitActiveTab === 'url' ? !!jobUrl : !!jobDescription) && !!selectedResumeId}
-                />
-              )}
+                {isResumeDetailsLoading ? (
+                  <DetailsSkeleton kind="resume" />
+                ) : (
+                  parsed && currentResumeId && (
+                    <ResumeDisplay
+                      data={parsed}
+                      fileName={fileName}
+                      onReset={handleResetCV}
+                    />
+                  )
+                )}
+              </motion.div>
+            )}
 
-              {(isJobFitDetailsLoading && !isSilentJobFitLoad) ? (
-                <DetailsSkeleton kind="jobfit" />
-              ) : (
-                jobFitData && searchParams.get('jobFitId') && (
-                  <JobFitReport
-                    data={jobFitData}
-                    onBack={() => {
-                      window.scrollTo(0, 0);
-                      updateAnalyzerUrl({ tab: 'job-fit', jobFitId: null });
-                    }}
-                    onDelete={(id) => handleDeleteJobFit(null, id)}
-                    onStartInterviewPrep={() => {
-                      setActiveTab('interview-prep');
-                      updateAnalyzerUrl({ tab: 'interview-prep', jobFitId: loadedJobFitId });
-                    }}
+            {activeTab === 'job-fit' && (
+              <motion.div
+                key="job-fit"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="w-full flex flex-col items-center gap-8"
+              >
+                {!currentJobFitId && (!isJobFitDetailsLoading || isSilentJobFitLoad) && (
+                  <JobFitTab
+                    jobUrl={jobUrl}
+                    setJobUrl={setJobUrl}
+                    jobDescription={jobDescription}
+                    setJobDescription={setJobDescription}
+                    activeTab={jobFitActiveTab}
+                    setActiveTab={setJobFitActiveTab}
+                    history={history}
+                    selectedResumeId={selectedResumeId}
+                    setSelectedResumeId={setSelectedResumeId}
+                    onAnalyze={handleJobFit}
+                    isAnalyzing={overlay.isOpen}
+                    canAnalyze={(jobFitActiveTab === 'url' ? !!jobUrl : !!jobDescription) && !!selectedResumeId}
                   />
-                )
-              )}
+                )}
 
-              {(!isJobFitDetailsLoading || isSilentJobFitLoad) && (isHistoryLoading || jobFitHistory.length > 0) && !searchParams.get('jobFitId') && (
-                <div className="w-full mt-4">
-                  <h3 className="text-lg font-bold text-slate-900 mb-4 ml-1">Recent Job Fit Analyses</h3>
-                  <JobFitHistoryList
-                    history={jobFitHistory}
-                    isLoading={isHistoryLoading}
-                    onLoad={handleLoadJobFitFromHistory}
-                    onDelete={handleDeleteJobFit}
+                {(isJobFitDetailsLoading && !isSilentJobFitLoad) ? (
+                  <DetailsSkeleton kind="jobfit" />
+                ) : (
+                  jobFitData && currentJobFitId && (
+                    <JobFitReport
+                      data={jobFitData}
+                      onBack={() => {
+                        window.scrollTo(0, 0);
+                        updateAnalyzerUrl({ tab: 'job-fit', jobFitId: null });
+                      }}
+                      onDelete={(id) => handleDeleteJobFit(null, id)}
+                      onStartInterviewPrep={() => {
+                        window.scrollTo(0, 0);
+                        setActiveTab('interview-prep');
+                        updateAnalyzerUrl({ tab: 'interview-prep', jobFitId: loadedJobFitId });
+                      }}
+                    />
+                  )
+                )}
+
+                {(!isJobFitDetailsLoading || isSilentJobFitLoad) && (isHistoryLoading || jobFitHistory.length > 0) && !currentJobFitId && (
+                  <div className="w-full mt-4">
+                    <h3 className="text-lg font-bold text-slate-900 mb-4 ml-1">Recent Job Fit Analyses</h3>
+                    <JobFitHistoryList
+                      history={jobFitHistory}
+                      isLoading={isHistoryLoading}
+                      onLoad={handleLoadJobFitFromHistory}
+                      onDelete={handleDeleteJobFit}
+                    />
+                  </div>
+                )}
+              </motion.div>
+            )}
+
+            {activeTab === 'interview-prep' && (
+              <motion.div
+                key="interview-prep"
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="w-full flex flex-col items-center"
+              >
+                <div className="w-full max-w-7xl">
+                  <InterviewPracticeSession
+                    compact
+                    jobFitHistory={jobFitHistory}
+                    isLoadingHistory={isHistoryLoading || isJobFitDetailsLoading}
+                    onJobSelect={async (item) => {
+                      await loadJobFitDetailsById(item.id, false);
+                      updateAnalyzerUrl({ tab: 'interview-prep' });
+                    }}
+                    jobContext={jobFitData ? {
+                      id: jobFitData.id,
+                      jobTitle: jobFitData.jobTitle || 'Target role',
+                      companyName: jobFitData.companyName,
+                      jobDescription:
+                        (jobFitData.jobDescriptionText &&
+                          jobFitData.jobDescriptionText.trim()) ||
+                        buildFallbackJobDescription(jobFitData),
+                      jobUrl: jobFitData.jobUrl,
+                    } as any : null}
                   />
                 </div>
-              )}
-            </motion.div>
-          )}
-
-          {activeTab === 'interview-prep' && (
-            <motion.div
-              key="interview-prep"
-              initial={{ y: 12 }}
-              animate={{ y: 0 }}
-              transition={{ duration: 0.2, ease: 'easeOut' }}
-              className="w-full flex flex-col items-center"
-            >
-              <div className="w-full max-w-7xl">
-                <InterviewPracticeSession
-                  compact
-                  jobFitHistory={jobFitHistory}
-                  isLoadingHistory={isHistoryLoading || isJobFitDetailsLoading}
-                  onJobSelect={async (item) => {
-                    await loadJobFitDetailsById(item.id, false);
-                    updateAnalyzerUrl({ tab: 'interview-prep' });
-                  }}
-                  jobContext={jobFitData ? {
-                    id: jobFitData.id,
-                    jobTitle: jobFitData.jobTitle || 'Target role',
-                    companyName: jobFitData.companyName,
-                    jobDescription:
-                      (jobFitData.jobDescriptionText &&
-                        jobFitData.jobDescriptionText.trim()) ||
-                      buildFallbackJobDescription(jobFitData),
-                    jobUrl: jobFitData.jobUrl,
-                  } as any : null}
-                />
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
