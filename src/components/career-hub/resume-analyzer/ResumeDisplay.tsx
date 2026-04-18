@@ -187,14 +187,24 @@ export function ResumeDisplay({ data, fileName, onReset }: ResumeDisplayProps) {
                     <div className="flex items-start justify-between gap-4">
                       <h3 className="font-bold text-slate-900 text-[18px] tracking-tight">{proj.name}</h3>
                     </div>
-                    {proj.description && (
+                    {proj.bullets && proj.bullets.length > 0 ? (
+                      <ul className="mt-4 space-y-2.5">
+                        {proj.bullets.map((b, j) => (
+                          <li key={j} className="flex items-start gap-3 text-[14px] text-slate-950 font-medium whitespace-pre-wrap">
+                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-300 shrink-0" />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : proj.description && (
                       <p className="mt-3 text-[15px] text-slate-950 leading-relaxed font-medium whitespace-pre-wrap">
                         {proj.description}
                       </p>
                     )}
-                    {proj.link && (
+                    {proj.link && proj.link.length > 3 && (
                       <div className="mt-4">
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer"
+                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} 
+                          target="_blank" rel="noopener noreferrer"
                           className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-[13px] font-bold transition-none">
                           View Project <Globe className="w-3.5 h-3.5" />
                         </a>

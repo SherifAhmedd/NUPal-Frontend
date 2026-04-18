@@ -212,7 +212,7 @@ export function JobFitReport({ data, onBack, onDelete, onStartInterviewPrep }: J
             <div className="space-y-5">
               {data.recommendations.map((rec, i) => {
                 // Extract URLs from the recommendation text
-                const urlRegex = /https?:\/\/[^\s)]+/g;
+                const urlRegex = /https?:\/\/[^\s)]+?(?=[.,!?;:]*(\s|$|\)))/g;
                 const urls = rec.match(urlRegex) || [];
                 // Remove URLs and empty parentheses from display text
                 let textWithoutUrls = rec.replace(urlRegex, '').trim();

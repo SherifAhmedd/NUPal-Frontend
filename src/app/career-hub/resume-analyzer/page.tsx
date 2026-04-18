@@ -293,6 +293,7 @@ function ResumeAnalyzerPageInner() {
   };
 
   const handleLoadFromHistory = async (item: ResumeHistoryItem) => {
+    navigatingToResumeRef.current = item.id;
     setActiveTab('resume-checking');
     updateAnalyzerUrl({ tab: 'resume-checking', resumeId: item.id, jobFitId: null });
     await loadResumeDetailsById(item.id, item.fileName);
@@ -379,6 +380,7 @@ function ResumeAnalyzerPageInner() {
   };
 
   const handleLoadJobFitFromHistory = async (item: JobFitHistoryItem) => {
+    navigatingToJobFitRef.current = item.id;
     setActiveTab('job-fit');
     updateAnalyzerUrl({ tab: 'job-fit', jobFitId: item.id, resumeId: null });
     await loadJobFitDetailsById(item.id);
