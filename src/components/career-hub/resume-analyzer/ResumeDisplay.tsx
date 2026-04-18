@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  CheckCircle2, FileText, Upload, Sparkles, Mail, Phone, MapPin, 
-  Linkedin, Github, Globe, BookOpen, GraduationCap, Building2, 
+import {
+  CheckCircle2, FileText, Upload, Sparkles, Mail, Phone, MapPin,
+  Linkedin, Github, Globe, BookOpen, GraduationCap, Building2,
   Calendar, Briefcase, FolderGit2, Wrench, Languages, Trophy, Award, Star,
   ChevronLeft
 } from 'lucide-react';
@@ -187,16 +187,42 @@ export function ResumeDisplay({ data, fileName, onReset }: ResumeDisplayProps) {
                     <div className="flex items-start justify-between gap-4">
                       <h3 className="font-bold text-slate-900 text-[18px] tracking-tight">{proj.name}</h3>
                     </div>
-                    {proj.description && (
+                    {proj.bullets && proj.bullets.length > 0 ? (
+                      <ul className="mt-4 space-y-2.5">
+                        {proj.bullets.map((b, j) => (
+                          <li key={j} className="flex items-start gap-3 text-[14px] text-slate-950 font-medium whitespace-pre-wrap">
+                            <span className="mt-2 w-1.5 h-1.5 rounded-full bg-blue-300 shrink-0" />
+                            {b}
+                          </li>
+                        ))}
+                      </ul>
+                    ) : proj.description && (
                       <p className="mt-3 text-[15px] text-slate-950 leading-relaxed font-medium whitespace-pre-wrap">
                         {proj.description}
                       </p>
                     )}
                     {proj.link && (
-                      <div className="mt-4">
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-[13px] font-bold transition-none">
-                          View Project <Globe className="w-3.5 h-3.5" />
+                      <div className="mt-4 pt-1 flex items-center gap-2">
+                        <a
+                          href={(() => {
+                            // Extract just the link part if it contains text like "Link: http..."
+                            let cleaned = proj.link.trim();
+                            const urlMatch = cleaned.match(/https?:\/\/[^\s]+/);
+                            if (urlMatch) cleaned = urlMatch[0];
+
+                            // Remove trailing punctuation
+                            cleaned = cleaned.replace(/[.,:;)]+$/, '');
+
+                            return cleaned.startsWith('http') ? cleaned : `https://${cleaned}`;
+                          })()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[14px] font-semibold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1.5 transition-colors"
+                        >
+                          View Project
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
                         </a>
                       </div>
                     )}

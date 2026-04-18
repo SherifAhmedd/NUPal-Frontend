@@ -38,6 +38,7 @@ export interface ParsedResumeEducation {
 export interface ParsedResumeProject {
   name: string | null;
   description: string | null;
+  bullets?: string[];
   technologies: string[];
   link: string | null;
 }
