@@ -1,7 +1,7 @@
 import React from 'react';
-import { 
-  CheckCircle2, FileText, Upload, Sparkles, Mail, Phone, MapPin, 
-  Linkedin, Github, Globe, BookOpen, GraduationCap, Building2, 
+import {
+  CheckCircle2, FileText, Upload, Sparkles, Mail, Phone, MapPin,
+  Linkedin, Github, Globe, BookOpen, GraduationCap, Building2,
   Calendar, Briefcase, FolderGit2, Wrench, Languages, Trophy, Award, Star,
   ChevronLeft
 } from 'lucide-react';
@@ -201,12 +201,28 @@ export function ResumeDisplay({ data, fileName, onReset }: ResumeDisplayProps) {
                         {proj.description}
                       </p>
                     )}
-                    {proj.link && proj.link.length > 3 && (
-                      <div className="mt-4">
-                        <a href={proj.link.startsWith('http') ? proj.link : `https://${proj.link}`} 
-                          target="_blank" rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-700 text-[13px] font-bold transition-none">
-                          View Project <Globe className="w-3.5 h-3.5" />
+                    {proj.link && (
+                      <div className="mt-4 pt-1 flex items-center gap-2">
+                        <a
+                          href={(() => {
+                            // Extract just the link part if it contains text like "Link: http..."
+                            let cleaned = proj.link.trim();
+                            const urlMatch = cleaned.match(/https?:\/\/[^\s]+/);
+                            if (urlMatch) cleaned = urlMatch[0];
+
+                            // Remove trailing punctuation
+                            cleaned = cleaned.replace(/[.,:;)]+$/, '');
+
+                            return cleaned.startsWith('http') ? cleaned : `https://${cleaned}`;
+                          })()}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[14px] font-semibold text-blue-600 hover:text-blue-700 hover:underline flex items-center gap-1.5 transition-colors"
+                        >
+                          View Project
+                          <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
                         </a>
                       </div>
                     )}
